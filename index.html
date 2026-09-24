@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
+<meta name="funddna-api" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>fundDNA — Research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,7 +77,12 @@ select{font:inherit;font-size:13px;background:none;border:1px solid var(--ink);p
 .fin .fp g.b path{stroke:#14130E;opacity:.85;animation:none;stroke-dashoffset:0;stroke-width:2.2}
 .sec>*,.fpw>*,.idn>*,.fin>*{min-width:0}footer{padding:0 0 44px;font-size:12px;color:var(--mute)}
 a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-@media(max-width:860px){.w{padding:0 20px}nav,.rt span:first-child{display:none}.hd{gap:14px}.idn,.sec,.fpw,.two,.fin{grid-template-columns:1fr;gap:26px}.sec{padding:32px 0 40px}
+.ins{display:grid;gap:0}.hl{border-top:1px solid var(--ink);padding:18px 0 26px}.hl .hh{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:14px}.hl h3{font:400 28px/1.1 var(--serif);letter-spacing:-.01em}.hl .hh .lbl{margin:0}
+.hq{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 36px}.hq p{font-size:15px;margin-bottom:6px}.hq>div:last-child{grid-column:1/-1}
+.srcs{white-space:normal}.src{font:italic 14px var(--serif);color:var(--mute);text-decoration:underline;text-decoration-color:var(--soft);text-underline-offset:3px;margin-left:8px}.src:hover{color:var(--ink)}
+.stamp a{color:var(--mute)}.pf3{display:grid;grid-template-columns:1fr;gap:30px}.pf3 h3{font:400 22px var(--serif);margin-bottom:8px}.pf3 table{min-width:0}.pf3 th:nth-child(4),.pf3 td:nth-child(4){text-align:right}
+table.lt th,table.lt td{text-align:left}.fig b.sm{font-size:clamp(24px,2.9vw,38px);white-space:nowrap}
+@media(max-width:860px){.hq{grid-template-columns:1fr}.hl h3{font-size:24px}.w{padding:0 20px}nav,.rt span:first-child{display:none}.hd{gap:14px}.idn,.sec,.fpw,.two,.fin{grid-template-columns:1fr;gap:26px}.sec{padding:32px 0 40px}
 .chg3,.brk{grid-template-columns:1fr;gap:22px}.rk,.mg{grid-template-columns:repeat(2,1fr)}.fp text{display:none}
 .tm{height:auto}.tr{flex-wrap:wrap;flex:none!important}.tr:first-child{height:180px}.tr+.tr .blk{flex:1 1 calc(33.33% - 2px)!important;height:104px}.blk{padding:9px 10px}.blk b{font-size:24px}
 .sg b{font-size:26px}.sg span{font-size:11px}.mc b{font-size:24px}
@@ -90,70 +96,37 @@ table{font-size:13px}th,td{padding-left:8px;padding-right:8px}th:first-child,td:
 <div class="rt"><span id="mk"></span><span class="av" title="Profile">MR</span></div></div></header>
 <main id="app"></main>
 <script>
-/* ===== DATA LAYER — replace this object; the UI renders only from it ===== */
-const mockFundData={
-asOf:'24 Sep 2026',
-dims:['Growth','Quality','Value','Momentum','Concentration','Stability','Liquidity','Cyclicality'],
-driverNames:['Earnings Growth','Sector Allocation','Stock Selection','Valuation Re-rating'],
-bench:[100,104,108,103,110,116,119,114,109,106,112,120,127,132,137,142,145,150,155,161,165],
-cat:[100,104,109,104,111,117,121,115,110,107,113,121,128,134,139,145,148,154,160,167,172],
-refs:{
- cat:{name:'Category (Flexi Cap)',r1:16.2,r3:15.1,vol:14.2,beta:.97,sharpe:1.08,dd:-19.6,er:1.05,top10:38.4,large:61},
- bench:{name:'Benchmark (Nifty 500 TRI)',r1:13.8,r3:14.2,vol:13.6,beta:1,sharpe:.96,dd:-20.7,er:0,top10:31.5,large:72}},
-funds:{
-hdfc:{name:'HDFC Flexi Cap Fund',plan:'DIRECT • GROWTH',nav:2184.32,aum:82430,stats:{r1:18.42,r3:16.9,vol:14.8,beta:.94,sharpe:1.21,dd:-18.4,er:.72,top10:44.9,large:68},
- series:[100,105,110,104,113,120,124,118,111,107,114,123,131,138,144,151,154,161,168,176,182.4],
- notes:[{i:5,t:'Financials rerated'},{i:9,t:'Market correction'},{i:13,t:'Earnings acceleration'},{i:18,t:'Mid-cap exposure increased'}],
- dna:[72,78,44,61,58,66,81,49],
- profile:[['Growth-led',4],['Large-cap tilted',4],['Quality biased',4],['Moderate concentration',3],['Moderate turnover',3],['Medium-high risk',4]],
- statement:'A diversified flexi-cap strategy with a large-cap core, meaningful financial exposure and selective participation in industrial and technology businesses.',
- interp:['Most of the return traces to earnings compounding in the largest holdings, not to a valuation call. Growth and quality scores are high while value is low: the manager pays for durability.','Sector weights lean into banks and capital goods against the benchmark, and the 24% mid-cap sleeve is where stock selection has added the most, and where the fund is least liquid.'],
- drivers:[38,24,20,18],
- sectors:[['Financials',24.8,31.2],['Technology',14.2,13.5],['Industrials',12.7,9.8],['Consumer',10.4,11.9],['Healthcare',8.6,5.4],['Energy',7.9,9.1],['Materials',6.3,7.6],['Communication',5.2,4.1],['Other & cash',9.9,7.4]],
- mcap:[68,24,8],
- book:[['HDFC Bank',9.4,'Financials',1.2,4.1,.3],['ICICI Bank',7.8,'Financials',3.4,8.2,.5],['Larsen & Toubro',4.8,'Industrials',2.7,9.4,.8],['Infosys',4.6,'Technology',-1.9,2.2,-.6],['Reliance Industries',4.2,'Energy',.8,5,-.2],['Bharti Airtel',3.9,'Communication',4.6,11.3,.9],['Axis Bank',3.4,'Financials',2.1,6,-.4],['Sun Pharma',3.1,'Healthcare',2,6.8,3.1,1],['TCS',3,'Technology',-2.4,-1.1,-.9],['Mahindra & Mahindra',2.6,'Consumer',5.3,12.6,2.6,1]],
- riskNote:'Drawdowns cluster where financials and mid-caps fall together. Beta below one has cushioned the index falls, but the fund gave back most of a rally in the last correction before recovering.',
- risks:[['Financials concentration','24.8% sector exposure means banking-sector weakness could materially affect relative performance.'],['Valuation compression','Growth-oriented holdings remain sensitive to changes in market multiples.'],['Mid-cap exposure','24% allocation increases sensitivity to liquidity and economic-cycle conditions.']],
- mgr:{name:'Prashant Jain',tenure:'6.4 years',exp:'18+ years',turn:'Moderate'},
- line:'A growth-oriented flexi-cap portfolio with a large-cap core, meaningful financial exposure and moderate concentration.'},
-ppfas:{name:'Parag Parikh Flexi Cap Fund',plan:'DIRECT • GROWTH',nav:88.41,aum:104220,stats:{r1:17.7,r3:18.4,vol:10.9,beta:.78,sharpe:1.52,dd:-12.1,er:.63,top10:42,large:74},
- series:[100,103,108,105,112,119,123,119,113,110,117,126,134,141,148,154,158,165,171,179,186],
- notes:[{i:5,t:'Quality bid'},{i:9,t:'Market correction'}],
- dna:[66,88,38,52,74,82,70,32],
- profile:[['Quality-led',5],['Large-cap tilted',4],['Growth biased',3],['High concentration',4],['Low turnover',1],['Medium risk',3]],
- statement:'A concentrated, quality-first portfolio that holds domestic compounders alongside a steady allocation to overseas platforms and cash.',
- interp:['Stock selection carries more of the return than in the category, with a low-turnover book that lets earnings compound.','Defensive weights in utilities and consumer names dampen drawdowns; the cost is less participation in cyclical rallies.'],
- drivers:[31,15,38,16],
- sectors:[['Financials',27.4,31.2],['Technology',17.9,13.5],['Consumer',14.6,11.9],['Healthcare',9.8,5.4],['Industrials',7.6,9.8],['Other & cash',22.7,28.2]],
- mcap:[74,18,8],
- book:[['HDFC Bank',8.1,'Financials',1.2,4.1,.2],['Bajaj Holdings',6.4,'Financials',1.8,5.5,-.3],['Coal India',5.6,'Energy',-.8,1.9,-.5],['Power Grid',5.1,'Utilities',.9,3.2,.4],['ITC',4.7,'Consumer',1.1,3.7,.6],['Zomato',3.2,'Consumer',6.2,15.4,3.2,1]],
- riskNote:'Low volatility and shallow drawdowns come from defensive weights and cash. The risk is relative: in a fast cyclical rally the fund can lag.',
- risks:[['Concentration','Ten holdings make up 42% of assets, so single-stock misses show up quickly.'],['Cash drag','A large cash allocation can trail in sharp rallies.'],['Key-person dependence','Process is closely tied to a small team.']],
- mgr:{name:'Rajeev Thakkar',tenure:'10.8 years',exp:'25+ years',turn:'Low'},
- line:'A quality-first, concentrated flexi-cap portfolio with low turnover and a defensive tilt.'},
-kotak:{name:'Kotak Flexicap Fund',plan:'DIRECT • GROWTH',nav:96.07,aum:52310,stats:{r1:15.9,r3:15.4,vol:14.1,beta:.96,sharpe:1.09,dd:-19,er:.58,top10:47.2,large:66},
- series:[100,105,109,102,111,117,120,113,106,102,108,116,123,130,136,142,145,151,157,163,168],
- notes:[{i:9,t:'Market correction'},{i:14,t:'Cyclicals rerated'}],
- dna:[69,64,52,58,50,60,77,63],
- profile:[['Blend',3],['Large-cap tilted',3],['Cyclical lean',4],['Moderate concentration',3],['Moderate turnover',3],['Medium-high risk',4]],
- statement:'A blended flexi-cap strategy with a bank-heavy core and a cyclical lean in industrials and energy.',
- interp:['Returns follow the domestic cycle closely: capital goods and banks have led, defensives have lagged.','Value and growth scores sit near the middle, so the fund tends to track the category rather than diverge from it.'],
- drivers:[35,27,18,20],
- sectors:[['Financials',30.2,31.2],['Industrials',13.4,9.8],['Technology',11.8,13.5],['Consumer',11.1,11.9],['Energy',8.3,9.1],['Other & cash',25.2,24.5]],
- mcap:[66,25,9],
- book:[['ICICI Bank',8.9,'Financials',3.4,8.2,.4],['HDFC Bank',8.6,'Financials',1.2,4.1,-.2],['Infosys',5,'Technology',-1.9,2.2,.5],['Larsen & Toubro',4.4,'Industrials',2.7,9.4,.7],['Reliance Industries',4.1,'Energy',.8,5,-.6],['Trent',2.2,'Consumer',5.1,13,2.2,1]],
- riskNote:'The cyclical lean deepens drawdowns when growth expectations fall; recoveries have been quick but uneven.',
- risks:[['Cycle sensitivity','Industrials and energy make earnings dependent on the domestic capex cycle.'],['Bank concentration','Financials at 30% keep results tied to credit conditions.'],['Mid-cap liquidity','A 25% mid-cap sleeve can be hard to exit in stress.']],
- mgr:{name:'Harsha Upadhyaya',tenure:'8.2 years',exp:'22+ years',turn:'Moderate'},
- line:'A blended flexi-cap portfolio with a bank-heavy core and a cyclical lean.'}}
-};
+/* ===== DATA LAYER — live API. The UI renders only from D (same shape as the original mock). ===== */
+const API=(document.querySelector('meta[name=funddna-api]')||{}).content||'';
+const D={asOf:'',dims:['Return','Momentum','Stability','Resilience','Concentration','Large-cap','Equity','Breadth'],
+ dimDefs:['3Y annualised return vs the index','6M return','Lower NAV volatility scores higher','Smaller 3Y max drawdown scores higher','Top-10 holdings weight','Large-cap share of researched holdings (approx.)','Equity share of the portfolio','Spread across sectors (1 − top sector weight)'],
+ bench:[],cat:null,refs:{bench:{name:'Index'}},funds:{},analysis:{}};
+const clamp=v=>Math.max(3,Math.min(97,Math.round(v)));
+function toUI(x){
+ const st=x.stats||{},b=x.bench||{},bs=b.stats||{},eq=x.holdings.filter(h=>h.type==='EQUITY');
+ const topSec=(x.sectors.find(s=>!/Cash|Debt/.test(s[0]))||['—',0]);
+ const large=x.mcap?x.mcap[0]:null;
+ const dna=[clamp(50+3*((st.r3??0)-(bs.r3??0))),clamp(50+3*(st.r6m??0)),clamp(100-(st.vol??20)*4),clamp(100+(st.dd??-25)*2.5),clamp((x.top10||0)*1.6),clamp(large??50),clamp(x.equityShare||0),clamp(100-topSec[1]*1.5)];
+ const lv=v=>v>=70?4:v>=50?3:2;
+ const tv=x.turnover==null?null:x.turnover<30?1:x.turnover<70?3:5;
+ const profile=[[`${topSec[0]}-heavy`,lv(topSec[1]*2)],[large==null?'Market-cap mix unknown':large>=60?'Large-cap tilted':large>=35?'Multi-cap mix':'Mid/small-cap tilted',large==null?1:lv(large)],[(x.top10>=50?'High':x.top10>=35?'Moderate':'Low')+' concentration',lv(dna[4])],[tv==null?'Turnover n/a':(tv===1?'Low':tv===3?'Moderate':'High')+' turnover',tv??1],[(st.vol>=16?'High':st.vol>=11?'Medium':'Low')+' volatility',st.vol>=16?5:st.vol>=11?3:2],[(st.r3??0)>=(bs.r3??0)?'Ahead of index (3Y)':'Behind index (3Y)',(st.r3??0)>=(bs.r3??0)?4:2]];
+ const mg=x.managers||[],since=mg.map(m=>m.since).filter(Boolean).sort()[0];
+ const yrs=since?((Date.now()-new Date(since))/3.156e10).toFixed(1)+' years':'—';
+ return {code:x.code,name:x.name,plan:x.plan,nav:x.nav,aum:x.aum,navDate:x.navDate,portfolioDate:x.portfolioDate,sources:x.sources,coverage:x.coverage,
+  stats:{r1:st.r1,r3:st.r3,vol:st.vol,beta:st.beta,sharpe:st.sharpe,dd:st.dd,er:x.er,top10:x.top10,large},
+  benchStats:{r1:bs.r1,r3:bs.r3,vol:bs.vol,beta:1,sharpe:bs.r3!=null&&bs.vol?(bs.r3-6.5)/bs.vol:null,dd:bs.dd,er:null,top10:null,large:null},benchName:b.name||'Index',benchUrl:b.url,
+  series:x.series,benchSeries:b.series||[],notes:[],dna,profile,sectors:x.sectors.map(s=>[s[0],s[1],null]),mcap:x.mcap,
+  book:eq.slice(0,10).map(h=>[h.name,h.weight,h.sector,h.returns?h.returns['1M']:null,h.returns?h.returns['3M']:null,null]),
+  holdings:x.holdings,mgr:{name:mg.map(m=>m.name).join(', ')||'—',tenure:yrs,count:x.holdingsCount,turn:x.turnover!=null?x.turnover+'%':'—'}};
+}
+async function getJ(u){const r=await fetch(u);const j=await r.json().catch(()=>({error:'Bad response'}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
 /* ===== RENDERING ===== */
-const D=mockFundData,$=s=>document.querySelector(s),ids=Object.keys(D.funds);
-let cur='hdfc',peer='ppfas',per=5;
-const inr=n=>n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
-const sg=(n,d=1)=>(n>0?'+':n<0?'−':'')+Math.abs(n).toFixed(d)+'%';
+const $=s=>document.querySelector(s);let ids=[];
+let cur=null,peer=null,per=5,pper='3M';
+const inr=n=>n==null?'—':n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sg=(n,d=1)=>n==null||isNaN(n)?'—':(n>0?'+':n<0?'−':'')+Math.abs(n).toFixed(d)+'%';
 const cl=n=>n>0?'pos':n<0?'neg':'';
-const ql=i=>{const d=new Date(2026,8-3*(20-i),1);return d.toLocaleString('en-US',{month:'short'})+' ’'+String(d.getFullYear()).slice(2)};
+const ql=i=>{const e=D.asOfDate||new Date(),d=new Date(e.getFullYear(),e.getMonth()-3*(20-i),1);return d.toLocaleString('en-US',{month:'short'})+' ’'+String(d.getFullYear()).slice(2)};
 function fpBands(sc,W,H,N,step){
  const nb=sc.length,bw=W/nb,q=H/300;
  const s=x=>{let t=Math.min(nb-1,Math.max(0,x/bw-.5)),i=Math.floor(t),j=Math.min(nb-1,i+1),u=t-i;u=u*u*(3-2*u);return sc[i]+(sc[j]-sc[i])*u};
@@ -166,7 +139,7 @@ function fpSVG(f){
 }
 function chartHTML(){
  const f=D.funds[cur],n=per*4+1,s=21-n;
- const S=[['Fund',f.series,'#14130E',2.6,''],['Benchmark',D.bench,'#77746A',1.6,''],['Category',D.cat,'#A8A392',1.6,'5 4']].map(([l,a,c,w,d])=>{const v=a.slice(s);return{l,c,w,d,v:v.map(x=>x/v[0]*100)}});
+ const S=[['Fund',f.series,'#14130E',2.6,''],['Index',f.benchSeries,'#77746A',1.6,'']].filter(x=>x[1]&&x[1].length===21&&x[1].every(v=>v!=null)).map(([l,a,c,w,d])=>{const v=a.slice(s);return{l,c,w,d,v:v.map(x=>x/v[0]*100)}});
  const all=S.flatMap(x=>x.v),mn=Math.floor(Math.min(...all)/5)*5-3,mx=Math.ceil(Math.max(...all)/5)*5+3;
  const M=innerWidth<700,W=M?520:900,H=380,L=4,R=M?64:150,T=40,B=28,X=i=>L+i*(W-L-R)/(n-1),Y=v=>T+(mx-v)*(H-T-B)/(mx-mn),st=Math.ceil((n-1)/6);
  let g='';for(let k=0;k<=4;k++){const v=mn+k*(mx-mn)/4;g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#CFCABB"/><text x="${L}" y="${Y(v)-5}" font-size="${M?15:11}" fill="#77746A">${v>=100?'+':'−'}${Math.abs(Math.round(v-100))}%</text>`}
@@ -184,53 +157,107 @@ function ddHTML(f){
 function mapHTML(f){
  const a=[...f.sectors].sort((x,y)=>y[1]-x[1]),r1=a.slice(0,3),r2=a.slice(3),sum=r=>r.reduce((t,x)=>t+x[1],0);
  const row=r=>`<div class="tr" style="flex:${sum(r)}">${r.map(x=>{const t=Math.min(100,22+x[1]*3.4);return`<div class="blk" data-n="${x[0]}" data-w="${x[1]}" data-b="${x[2]}" title="${x[0]} ${x[1].toFixed(1)}%" style="flex:${x[1]};background:color-mix(in srgb,#14130E ${t}%,#EEEADF);color:${t>52?'#EEEADF':'#14130E'}"><span>${x[0]}</span><b>${x[1].toFixed(1)}%</b></div>`}).join('')}</div>`;
- return `<div class="tm">${row(r1)}${row(r2)}</div><div id="mapr">Hover a block to compare with the benchmark.</div>`;
+ return `<div class="tm">${row(r1)}${row(r2)}</div><div id="mapr">Hover a block to read its weight.</div>`;
 }
 function cmpHTML(){
- const f=D.funds[cur],p=D.funds[peer],c=[['1Y return','r1','%'],['3Y annualised','r3','%'],['Volatility','vol','%'],['Beta','beta',''],['Sharpe','sharpe',''],['Max drawdown','dd','%'],['Expense ratio','er','%'],['Top-10 weight','top10','%'],['Large-cap share','large','%']];
- const v=(o,k,u)=>o[k].toFixed(['sharpe','er','beta'].includes(k)?2:1).replace('-','−')+u;
- return `<div class="tw"><table class="cmp"><thead><tr><th></th><th>${f.name}</th><th>${D.refs.cat.name}</th><th>${D.refs.bench.name}</th><th><select id="peer" aria-label="Peer fund">${ids.filter(i=>i!==cur).map(i=>`<option value="${i}" ${i===peer?'selected':''}>${D.funds[i].name}</option>`).join('')}</select></th></tr></thead><tbody>${c.map(([l,k,u])=>`<tr><td>${l}</td><td>${v(f.stats,k,u)}</td><td>${v(D.refs.cat,k,u)}</td><td>${v(D.refs.bench,k,u)}</td><td>${v(p.stats,k,u)}</td></tr>`).join('')}</tbody></table></div>`;
+ const f=D.funds[cur],p=peer&&D.funds[peer],c=[['1Y return','r1','%'],['3Y annualised','r3','%'],['Volatility (3Y)','vol','%'],['Beta (3Y)','beta',''],['Sharpe (3Y, rf 6.5%)','sharpe',''],['Max drawdown (3Y)','dd','%'],['Expense ratio','er','%'],['Top-10 weight','top10','%'],['Large-cap share (approx.)','large','%']];
+ const v=(o,k,u)=>o&&o[k]!=null?(+o[k]).toFixed(['sharpe','er','beta'].includes(k)?2:1).replace('-','−')+u:'—';
+ const others=ids.filter(i=>i!==cur);
+ return `<div class="tw"><table class="cmp"><thead><tr><th></th><th>${f.name}</th><th>${f.benchName}</th><th>${others.length?`<select id="peer" aria-label="Peer fund">${others.map(i=>`<option value="${i}" ${i===peer?'selected':''}>${D.funds[i].name}</option>`).join('')}</select>`:'<span class="mut" style="font-weight:400">Search another fund to compare</span>'}</th></tr></thead><tbody>${c.map(([l,k,u])=>`<tr><td>${l}</td><td>${v(f.stats,k,u)}</td><td>${v(f.benchStats,k,u)}</td><td>${v(p&&p.stats,k,u)}</td></tr>`).join('')}</tbody></table></div>`;
 }
 const sec=(t,sub,body,id='')=>`<div class="w"><section class="sec" ${id?`id="${id}"`:''}><div><h2>${t}</h2><p class="sub">${sub}</p></div><div>${body}</div></section></div>`;
+const nm=t=>String(t||'').replace(/\s+(Ltd|Limited)\.?$/i,'');
+const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function srcLinks(ids,A){const m={};(A.sources||[]).forEach(x=>m[x.id]=x);return ids.map(i=>m[i]).filter(Boolean).map(x=>`<a class="src" href="${esc(x.url)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.publisher||'Source')}${x.date?', '+new Date(x.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}</a>`).join('')}
+function claims(list,A,empty){return list&&list.length?list.map(c=>`<p>${esc(c.text)} <span class="srcs">${srcLinks(c.src,A)}</span></p>`).join(''):`<p class="mut">${empty}</p>`}
+function insideHTML(f){
+ const A=D.analysis[cur];
+ if(!A||A.loading)return `<p class="note mut">Researching the largest holdings: filings, results, investor presentations and news. This takes about a minute the first time.</p>`;
+ if(A.failed)return `<p class="note">Research could not finish: ${esc(A.failed)}. Holdings, returns and risk below are still live.</p>`;
+ if(!A.holdings||!A.holdings.length)return `<p class="note">${esc(A.error||'No analysis returned.')}</p>`;
+ return `<div class="ins">${A.holdings.map(h=>{const r=h.returns||{};return `<article class="hl"><div class="hh"><h3>${esc(nm(h.name))}</h3><p class="lbl">${h.weight!=null?h.weight.toFixed(1)+'% of fund':''}${h.sector?' · '+esc(h.sector):''}${r['3M']!=null?` · 3M <span class="${cl(r['3M'])}">${sg(r['3M'])}</span>`:''}</p></div>
+ <div class="hq"><div><p class="lbl">What changed</p>${claims(h.what_changed,A,'No sourced development found in the last 30 days.')}</div>
+ <div><p class="lbl">What the market expected</p>${claims(h.expected,A,'No reliable consensus source found.')}</div>
+ <div><p class="lbl">What we’re seeing</p>${claims(h.seeing,A,'Not enough sourced data to compare expectation with reality.')}</div>
+ <div><p class="lbl">Why it matters to this fund</p><p>${esc(h.why_it_matters||'')}</p></div>
+ <div><p class="lbl">What to watch</p>${claims(h.watch,A,'No sourced catalyst found.')}</div></div></article>`}).join('')}</div>
+ <p class="cap">Every claim links to its source. Reasoning by ${esc(A.model||'Gemini')} from the cited material only${A.grounded?'':'; web search for consensus was unavailable on this run'}. Generated ${new Date(A.generatedAt).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}.</p>`;
+}
+function perfHTML(f){
+ const rows=f.holdings.filter(h=>h.type==='EQUITY'&&h.returns&&h.returns[pper]!=null).map(h=>({n:nm(h.name),w:h.weight,r:h.returns[pper],s:h.sector,c:h.weight*h.returns[pper]/100}));
+ const t=(title,list,col)=>`<div><h3>${title}</h3><div class="tw"><table class="bk"><thead><tr><th>STOCK</th><th>FUND WEIGHT</th><th>RETURN</th><th>${col==='c'?'CONTRIBUTION (EST.)':'SECTOR'}</th></tr></thead><tbody>${list.map(x=>`<tr><td>${esc(x.n)}</td><td>${x.w.toFixed(1)}%</td><td class="${cl(x.r)}">${sg(x.r)}</td><td class="${col==='c'?cl(x.c):''}">${col==='c'?(x.c>=0?'+':'−')+Math.abs(x.c).toFixed(2)+' pts':esc(x.s)}</td></tr>`).join('')||'<tr><td colspan="4">No data</td></tr>'}</tbody></table></div></div>`;
+ const byR=[...rows].sort((a,b)=>b.r-a.r),byC=[...rows].sort((a,b)=>b.c-a.c);
+ return `<div class="pb" role="group" aria-label="Return period">${['1M','3M','6M','1Y'].map(p=>`<button data-p="${p}" aria-pressed="${p===pper}">${p}</button>`).join('')}</div>
+ <div class="pf3">${t('Top performers',byR.slice(0,5),'s')}${t('Top contributors',byC.filter(x=>x.c>0).slice(0,5),'c')}${t('What’s dragging the fund',byC.filter(x=>x.c<0).reverse().slice(0,5),'c')}</div>
+ <p class="cap">Price returns for the ${rows.length} largest equity holdings with price data (${f.coverage}% of the fund). Contribution is estimated as fund weight × stock return; weights are as of ${f.portfolioDate}, so moves since then are not reflected.</p>`;
+}
+function wholeHTML(){
+ const A=D.analysis[cur],P=A&&A.portfolio;
+ if(!P)return `<p class="note mut">${A&&!A.loading?'Portfolio reading unavailable for this run.':'Waiting for the holding-level research above.'}</p>`;
+ const L=(x)=>(x||[]).map(esc).join(', ');
+ return `<div class="two" style="margin-top:0"><div><p class="lbl">What is driving the fund</p>${claims(P.drivers,A,'—')}</div><div><p class="lbl">Where expectations may be priced in</p>${claims(P.priced_in,A,'No sourced view on valuation expectations.')}</div></div>
+ <p class="lbl" style="margin-top:30px">Sectors and themes</p><div class="brk">${(P.themes||[]).slice(0,3).map((t,i)=>`<div><b>0${i+1}</b><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p><p class="cap">${L(t.holdings)}</p></div>`).join('')}</div>
+ <p class="lbl" style="margin-top:30px">Macro factors that matter to these holdings</p><div class="tw"><table class="bk lt"><thead><tr><th>FACTOR</th><th>WHY IT MATTERS HERE</th><th>HOLDINGS EXPOSED</th></tr></thead><tbody>${(P.macro||[]).map(m=>`<tr><td>${esc(m.factor)}</td><td style="text-align:left">${esc(m.why)}</td><td style="text-align:left">${L(m.holdings)}</td></tr>`).join('')}</tbody></table></div>`;
+}
 function render(){
- if(peer===cur)peer=ids.find(i=>i!==cur);
- const f=D.funds[cur],st=f.stats,bk=f.book,fmt=r=>`<p><span>${r[0]}</span><span class="${cl(r[5])}">${sg(r[5],1)}</span></p>`;
- const add=bk.filter(r=>r[6]),inc=bk.filter(r=>!r[6]&&r[5]>0),red=bk.filter(r=>r[5]<0);
+ const f=D.funds[cur];if(!f)return;
+ if(peer===cur||!D.funds[peer])peer=ids.find(i=>i!==cur)||null;
+ const st=f.stats,bk=f.book,A=D.analysis[cur]||{},P=A.portfolio||{};
+ const wait='<span class="mut">Researching…</span>';
+ const risks=(P.could_change||[]).slice(0,3);
+ const S=f.sources||{},dt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
  $('#app').innerHTML=`
- <div class="w"><section id="top" class="idn"><div><h1>${f.name}</h1><p class="plan">${f.plan}</p><p class="stamp">Updated ${D.asOf} · Mock data</p></div>
- <div class="fig"><div><b>₹${inr(f.nav)}</b><span>NAV</span></div><div><b class="${cl(st.r1)}">${sg(st.r1,2)}</b><span>1Y</span></div><div><b>₹${f.aum.toLocaleString('en-IN')} Cr</b><span>AUM</span></div><div><b>${st.er.toFixed(2)}%</b><span>EXPENSE RATIO</span></div></div></section></div>
- <div class="dark"><div class="w"><section class="sec"><div><h2>The DNA</h2><p class="sub">Eight measured traits, drawn as one pattern. Each fund produces its own.</p></div>
+ <div class="w"><section id="top" class="idn"><div><h1>${esc(f.name)}</h1><p class="plan">${esc(f.plan)}</p><p class="stamp">NAV ${esc(f.navDate)} · Holdings as of ${dt(f.portfolioDate)} · <a href="${esc(S.holdings&&S.holdings.url)}" target="_blank" rel="noopener">Holdings source</a> · <a href="${esc(S.disclosure&&S.disclosure.url)}" target="_blank" rel="noopener">AMC disclosures</a></p></div>
+ <div class="fig"><div><b>₹${inr(f.nav)}</b><span>NAV</span></div><div><b class="${cl(st.r1)}">${sg(st.r1,2)}</b><span>1Y</span></div><div><b class="${f.aum>=100000?'sm':''}">${f.aum!=null?'₹'+f.aum.toLocaleString('en-IN')+' Cr':'—'}</b><span>AUM</span></div><div><b>${st.er!=null?st.er.toFixed(2)+'%':'—'}</b><span>EXPENSE RATIO</span></div></div></section></div>
+ ${sec('What’s happening inside the fund?','The largest holdings, what changed, and why it matters here',insideHTML(f),'inside')}
+ ${sec('Which stocks are working?','Performers, contributors and drags',`<div id="perf">${perfHTML(f)}</div>`)}
+ ${sec('What does the portfolio mean?','Reading the book as a whole',wholeHTML())}
+ <div class="dark"><div class="w"><section class="sec"><div><h2>The DNA</h2><p class="sub">Eight measured traits, computed from holdings and NAV history. Each fund produces its own.</p></div>
  <div class="fpw"><div>${fpSVG(f)}<div id="fpr" class="mut">Hover or tap a band to read the trait.</div></div>
- <div class="pf"><h3>DNA profile</h3><ul class="pf">${f.profile.map(([l,n])=>`<li>${l}<i>${[1,2,3,4,5].map(k=>`<s class="${k<=n?'f':''}"></s>`).join('')}</i></li>`).join('')}</ul></div></div></section></div></div>
- ${sec('What is this fund really?','The analyst’s read',`<p class="big">${f.statement}</p><div class="two"><div><p class="lbl">FundDNA interpretation</p><p>${f.interp[0]}</p></div><p style="align-self:end">${f.interp[1]}</p></div>`)}
- ${sec('Performance','Where the return came from',`<div class="pb" role="group" aria-label="Period">${[1,3,5].map(y=>`<button data-y="${y}" aria-pressed="${y===per}">${y}Y</button>`).join('')}</div><div id="chart">${chartHTML()}</div><div class="leg"><span><i style="border-color:#14130E"></i>Fund</span><span><i style="border-color:#77746A"></i>Benchmark</span><span><i style="border-color:#A8A392;border-top-style:dashed"></i>Category</span><span>Rebased to 0 at period start · quarter-end points</span></div>`)}
- ${sec('What is driving returns?','Attribution of the 5-year return',`<div class="drv">${f.drivers.map((v,i)=>`<div class="sg" style="flex:${v}"><i style="background:${['#C8E23A','#14130E','#77746A','#B8B3A3'][i]}"></i><b>${v}%</b><span>${D.driverNames[i]}</span></div>`).join('')}</div>`)}
- ${sec('Where the money is','Sector exposure, sized by weight',`${mapHTML(f)}<p class="lbl" style="margin-top:30px">Market cap</p><div class="mc">${['Large','Mid','Small'].map((n,i)=>`<div style="flex:${f.mcap[i]}"><b>${f.mcap[i]}%</b><span>${n}</span></div>`).join('')}</div>`)}
- ${sec('The book','Largest positions and recent moves',`<div class="tw"><table class="bk"><thead><tr><th>COMPANY</th><th>WEIGHT</th><th>SECTOR</th><th>1M</th><th>3M</th><th>POSITION CHANGE</th></tr></thead><tbody>${bk.map(r=>`<tr title="${(r[1]-r[5]).toFixed(1)}% → ${r[1].toFixed(1)}% of assets"><td>${r[0]}${r[6]?' <span class="mut" style="font-size:11px">new</span>':''}</td><td>${r[1].toFixed(1)}%</td><td>${r[2]}</td><td class="${cl(r[3])}">${sg(r[3])}</td><td class="${cl(r[4])}">${sg(r[4])}</td><td class="${cl(r[5])}">${r[5]>0?'↑':'↓'} ${sg(r[5])}</td></tr>`).join('')}</tbody></table></div>`)}
- ${sec('What changed','Portfolio activity this month',`<div class="chg3"><div><h3>Added</h3>${add.map(fmt).join('')||'<p>None</p>'}</div><div><h3>Increased</h3>${inc.map(fmt).join('')||'<p>None</p>'}</div><div><h3>Reduced</h3>${red.map(fmt).join('')||'<p>None</p>'}</div></div>`)}
- ${sec('Where it can hurt','Risk in the numbers',`<div class="rk"><div><b>${st.vol.toFixed(1)}%</b><span>Volatility</span></div><div><b>${st.beta.toFixed(2)}</b><span>Beta</span></div><div><b class="neg">${sg(st.dd)}</b><span>Maximum drawdown</span></div><div><b>${st.sharpe.toFixed(2)}</b><span>Sharpe</span></div></div><p class="note">${f.riskNote}</p>${ddHTML(f)}<p class="cap">Drawdown from prior peak, quarter-end observations.</p>`)}
- ${sec('What could break the thesis?','Three things to watch',`<div class="brk">${f.risks.map((r,i)=>`<div><b>0${i+1}</b><h3>${r[0]}</h3><p>${r[1]}</p></div>`).join('')}</div>`)}
- ${sec('Who is running the money?','',`<dl class="mg"><div><dt>Manager</dt><dd>${f.mgr.name}</dd></div><div><dt>Fund tenure</dt><dd>${f.mgr.tenure}</dd></div><div><dt>Experience</dt><dd>${f.mgr.exp}</dd></div><div><dt>Portfolio turnover</dt><dd>${f.mgr.turn}</dd></div></dl>`)}
+ <div class="pf"><h3>DNA profile</h3><ul class="pf">${f.profile.map(([l,n])=>`<li>${esc(l)}<i>${[1,2,3,4,5].map(k=>`<s class="${k<=n?'f':''}"></s>`).join('')}</i></li>`).join('')}</ul></div></div></section></div></div>
+ ${sec('What is this fund really?','The analyst’s read',`<p class="big">${P.statement?esc(P.statement):wait}</p><div class="two"><div><p class="lbl">FundDNA interpretation</p><p>${P.interp?esc(P.interp[0]):''}</p></div><p style="align-self:end">${P.interp?esc(P.interp[1]||''):''}</p></div>`)}
+ ${sec('Performance','Fund against its index',`<div class="pb" role="group" aria-label="Period">${[1,3,5].map(y=>`<button data-y="${y}" aria-pressed="${y===per}">${y}Y</button>`).join('')}</div><div id="chart">${chartHTML()}</div><div class="leg"><span><i style="border-color:#14130E"></i>Fund (NAV)</span><span><i style="border-color:#77746A"></i>${esc(f.benchName)}</span><span>Rebased to 0 at period start · quarter-end points</span></div>`)}
+ ${sec('Where the money is','Sector exposure, sized by weight',`${mapHTML(f)}${f.mcap?`<p class="lbl" style="margin-top:30px">Market cap (approx., largest holdings)</p><div class="mc">${['Large','Mid','Small'].map((n,i)=>`<div style="flex:${Math.max(f.mcap[i],4)}"><b>${f.mcap[i]}%</b><span>${n}</span></div>`).join('')}</div>`:''}`)}
+ ${sec('The book','Largest positions and recent moves',`<div class="tw"><table class="bk"><thead><tr><th>COMPANY</th><th>WEIGHT</th><th>SECTOR</th><th>1M</th><th>3M</th></tr></thead><tbody>${bk.map(r=>`<tr><td>${esc(nm(r[0]))}</td><td>${r[1].toFixed(1)}%</td><td>${esc(r[2])}</td><td class="${cl(r[3])}">${sg(r[3])}</td><td class="${cl(r[4])}">${sg(r[4])}</td></tr>`).join('')}</tbody></table></div><p class="cap">Month-on-month position changes appear once two monthly disclosures have been captured.</p>`)}
+ ${sec('Where it can hurt','Risk in the numbers',`<div class="rk"><div><b>${st.vol!=null?st.vol.toFixed(1)+'%':'—'}</b><span>Volatility (3Y)</span></div><div><b>${st.beta!=null?st.beta.toFixed(2):'—'}</b><span>Beta vs index</span></div><div><b class="neg">${sg(st.dd)}</b><span>Maximum drawdown (3Y)</span></div><div><b>${st.sharpe!=null?st.sharpe.toFixed(2):'—'}</b><span>Sharpe (rf 6.5%)</span></div></div><p class="note">${P.risk_note?esc(P.risk_note):wait}</p>${ddHTML(f)}<p class="cap">Drawdown from prior peak, quarter-end NAV observations.</p>`)}
+ ${sec('What could break the thesis?','Three things to watch',risks.length?`<div class="brk">${risks.map((r,i)=>`<div><b>0${i+1}</b><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p></div>`).join('')}</div>`:`<p class="note">${wait}</p>`)}
+ ${sec('Who is running the money?','',`<dl class="mg"><div><dt>Manager${f.mgr.name.includes(',')?'s':''}</dt><dd>${esc(f.mgr.name)}</dd></div><div><dt>On this fund</dt><dd>${f.mgr.tenure}</dd></div><div><dt>Holdings</dt><dd>${f.mgr.count}</dd></div><div><dt>Portfolio turnover</dt><dd>${f.mgr.turn}</dd></div></dl>`)}
  ${sec('Put it in context','Same measures, side by side',`<div id="cmp">${cmpHTML()}</div>`,'ctx')}
- <div class="w"><section class="fin"><div><h2>The fund, in one line</h2><p class="big">${f.line}</p><p class="pl"><span>DNA profile</span>${f.profile.slice(0,4).map(p=>p[0]).join(' · ')}</p></div>
- <svg class="fp" viewBox="0 0 600 300" aria-hidden="true">${fpBands(f.dna.map(v=>v/100),600,300,24,6).map(p=>`<g class="b">${p}</g>`).join('')}</svg></section><footer>Mock data for interface development. Not investment advice.</footer></div>`;
+ <div class="w"><section class="fin"><div><h2>The fund, in one line</h2><p class="big">${P.line?esc(P.line):wait}</p><p class="pl"><span>DNA profile</span>${f.profile.slice(0,4).map(p=>esc(p[0])).join(' · ')}</p></div>
+ <svg class="fp" viewBox="0 0 600 300" aria-hidden="true">${fpBands(f.dna.map(v=>v/100),600,300,24,6).map(p=>`<g class="b">${p}</g>`).join('')}</svg></section><footer>Data: AMFI, AMC monthly disclosures (via Groww), NSE/BSE filings and prices, Screener.in, reputable financial press. Analysis by Gemini from cited sources only. Not investment advice.</footer></div>`;
 }
 /* ===== INTERACTION ===== */
 const app=$('#app');
 app.addEventListener('mouseover',e=>{
  const b=e.target.closest('.fp g[data-i]'),k=e.target.closest('.blk');
- if(b){const fp=$('#fp'),i=+b.dataset.i,v=D.funds[cur].dna[i];fp.classList.add('h');fp.querySelectorAll('g.b').forEach(g=>g.classList.toggle('on',g===b));$('#fpr').innerHTML=`<b>${D.dims[i]} ${v}</b>${v>=70?'High':v>=50?'Moderate':'Low'} relative to the category`}
- if(k){const d=(k.dataset.w-k.dataset.b).toFixed(1);$('#mapr').textContent=`${k.dataset.n}: ${k.dataset.w}% of assets · benchmark ${k.dataset.b}% · ${d>0?'+':d<0?'−':''}${Math.abs(d)} pts`}
+ if(b){const fp=$('#fp'),i=+b.dataset.i,v=D.funds[cur].dna[i];fp.classList.add('h');fp.querySelectorAll('g.b').forEach(g=>g.classList.toggle('on',g===b));$('#fpr').innerHTML=`<b>${D.dims[i]} ${v}</b>${v>=70?'High':v>=50?'Moderate':'Low'} · ${D.dimDefs[i]}`}
+ if(k){const d=(k.dataset.w-k.dataset.b).toFixed(1);$('#mapr').textContent=k.dataset.b&&k.dataset.b!=='null'?`${k.dataset.n}: ${k.dataset.w}% of assets · benchmark ${k.dataset.b}% · ${d>0?'+':d<0?'−':''}${Math.abs(d)} pts`:`${k.dataset.n}: ${k.dataset.w}% of assets`}
 });
 app.addEventListener('mouseout',e=>{if(e.target.closest('#fp')&&!e.relatedTarget?.closest?.('#fp')){const fp=$('#fp');fp.classList.remove('h');fp.querySelectorAll('g.b').forEach(g=>g.classList.remove('on'));$('#fpr').textContent='Hover or tap a band to read the trait.'}});
-app.addEventListener('click',e=>{const b=e.target.closest('.pb button');if(!b)return;per=+b.dataset.y;$('#chart').innerHTML=chartHTML();app.querySelectorAll('.pb button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+app.addEventListener('click',e=>{const b=e.target.closest('.pb button');if(!b)return;
+ if(b.dataset.p){pper=b.dataset.p;$('#perf').innerHTML=perfHTML(D.funds[cur]);return}
+ per=+b.dataset.y;$('#chart').innerHTML=chartHTML();b.parentNode.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
 app.addEventListener('change',e=>{if(e.target.id==='peer'){peer=e.target.value;$('#cmp').innerHTML=cmpHTML()}});
 const q=$('#q'),res=$('#res');
-const pick=id=>{cur=id;q.value='';res.style.display='none';render();scrollTo(0,0)};
-q.addEventListener('input',()=>{const t=q.value.trim().toLowerCase(),m=ids.filter(i=>D.funds[i].name.toLowerCase().includes(t));res.innerHTML=m.map(i=>`<li data-id="${i}">${D.funds[i].name}</li>`).join('')||'<li>No fund matches</li>';res.style.display=t?'block':'none'});
+async function load(code){
+ code=String(code);cur=code;q.value='';res.style.display='none';location.hash=code;
+ if(!D.funds[code]){$('#app').innerHTML=`<div class="w"><section class="idn"><div><h1 class="mut">Loading fund…</h1><p class="stamp">Fetching holdings, NAV history and prices.</p></div></section></div>`;
+  try{const x=await getJ(`${API}/api/fund?code=${code}`);D.funds[code]=toUI(x);D.asOfDate=new Date(x.seriesEnd||Date.now());if(!ids.includes(code))ids.push(code);try{localStorage.setItem('fd_recent',JSON.stringify(ids.slice(-6)))}catch(e){}}
+  catch(e){$('#app').innerHTML=`<div class="w"><section class="idn"><div><h1>Couldn’t load this fund</h1><p class="stamp">${esc(e.message)}. Holdings may not be published for this scheme (e.g. some debt, FoF or closed schemes).</p></div></section></div>`;return}}
+ if(cur!==code)return;render();scrollTo(0,0);
+ if(!D.analysis[code]){D.analysis[code]={loading:true};
+  (async()=>{let a=null;try{a=await getJ(`data/analysis/${code}.json`)}catch(e){}
+   if(!a){try{a=await getJ(`${API}/api/analysis?code=${code}`)}catch(e){a={failed:e.message}}}
+   D.analysis[code]=a;if(cur===code)render()})();}
+}
+const pick=id=>load(id);
+let qt;q.addEventListener('input',()=>{clearTimeout(qt);const t=q.value.trim();if(t.length<2){res.style.display='none';return}
+ qt=setTimeout(async()=>{try{const r=await getJ(`${API}/api/search?q=${encodeURIComponent(t)}`);if(q.value.trim()!==t)return;
+ res.innerHTML=r.results.map(x=>`<li data-id="${x.code}">${esc(x.name)}<span class="mut" style="display:block;font-size:12px">${esc(x.amc)} · ${esc(x.category)}</span></li>`).join('')||'<li>No fund matches</li>'}catch(e){res.innerHTML=`<li>Search unavailable</li>`}res.style.display='block'},220)});
 q.addEventListener('keydown',e=>{if(e.key==='Enter'){const l=res.querySelector('li[data-id]');if(l)pick(l.dataset.id)}});
 res.addEventListener('click',e=>{const l=e.target.closest('li[data-id]');if(l)pick(l.dataset.id)});
 document.addEventListener('click',e=>{if(!e.target.closest('.srch'))res.style.display='none'});
 (()=>{const i=new Date(Date.now()+(new Date().getTimezoneOffset()+330)*6e4),m=i.getHours()*60+i.getMinutes(),o=i.getDay()%6&&m>=555&&m<930;$('#mk').innerHTML=`<i class="dot ${o?'o':''}"></i>NSE ${o?'open':'closed'}`})();
-addEventListener('resize',()=>{const c=$('#chart');if(c)c.innerHTML=chartHTML()});render();
+addEventListener('resize',()=>{const c=$('#chart');if(c&&D.funds[cur])c.innerHTML=chartHTML()});
+load((location.hash.slice(1).match(/^\d+$/)||[])[0]||'118955');
 </script></body></html>
