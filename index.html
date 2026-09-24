@@ -33,7 +33,7 @@ h1{font:400 clamp(40px,6vw,76px)/.98 var(--serif);letter-spacing:-.025em}
 .sec{display:grid;grid-template-columns:250px 1fr;gap:44px;padding:44px 0 56px;border-top:2px solid var(--ink)}
 .sec h2{font:500 25px/1.1 var(--serif);letter-spacing:.015em;text-transform:uppercase}
 .sec .sub{margin-top:10px;font:italic 400 17px/1.35 var(--serif);color:var(--mute)}
-.dark{background:var(--ink);color:var(--paper)}.dark .sec{border-top:0;padding-top:52px}.dark .sub,.dark .mut{color:#A7A395}
+.dark{background:var(--ink);color:var(--paper)}.dark+.w>.sec{border-top-color:transparent}.dark .sec{border-top:0;padding-top:52px}.dark .sub,.dark .mut{color:#A7A395}
 .fpw{display:grid;grid-template-columns:1fr 250px;gap:40px}
 .fp{width:100%;height:auto;display:block;cursor:crosshair}
 .fp g.b path{fill:none;stroke:#EEEADF;stroke-width:1.8;opacity:.55;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 1.6s cubic-bezier(.3,.6,.2,1) forwards;transition:stroke .12s,opacity .12s}
@@ -50,12 +50,12 @@ h1{font:400 clamp(40px,6vw,76px)/.98 var(--serif);letter-spacing:-.025em}
 .pb button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
 svg text{font-family:var(--sans)}.ch{width:100%;height:auto;display:block;overflow:visible}
 .an circle{fill:var(--acid);stroke:var(--ink);stroke-width:1.5;transition:r .1s}.an:hover circle{r:7}.an text{font-size:12px;fill:var(--mute);text-anchor:middle;paint-order:stroke;stroke:#EEEADF;stroke-width:5px;stroke-linejoin:round}.an:hover text{fill:var(--ink);font-weight:600}
-.leg{display:flex;gap:22px;font-size:12px;color:var(--mute);margin-top:8px}.leg i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.leg{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12px;color:var(--mute);margin-top:8px}.leg i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
 .drv{display:flex;gap:4px}.sg{transition:opacity .12s}.drv:hover .sg{opacity:.45}.drv .sg:hover{opacity:1}
-.sg i{display:block;height:64px}.sg b{display:block;font:400 clamp(28px,3.4vw,46px)/1.1 var(--serif);margin-top:8px}.sg span{font-size:12px;color:var(--mute)}
+.sg i{display:block;height:64px}.sg b{display:block;font:400 clamp(28px,3.4vw,46px)/1.1 var(--serif);margin-top:8px}.sg span{display:block;font-size:12px;line-height:1.35;color:var(--mute)}.sg{min-width:0}
 .tm{display:flex;flex-direction:column;gap:3px;height:340px}.tr{display:flex;gap:3px}
-.blk{word-break:break-word;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;min-width:0;cursor:default;transition:background .12s}
-.blk:hover{background:var(--acid)!important;color:var(--ink)!important}.blk b{font:400 clamp(20px,2.6vw,34px)/1 var(--serif)}.blk span{font-size:12px}
+.blk{word-break:normal;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;min-width:0;cursor:default;transition:background .12s}
+.blk:hover{background:var(--acid)!important;color:var(--ink)!important}.blk b{font:400 clamp(20px,2.6vw,34px)/1 var(--serif)}.blk span{font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #mapr{margin-top:12px;font-size:14px;color:var(--mute);min-height:22px}
 .mc{display:flex;gap:3px;margin-top:8px}.mc div{border-top:6px solid var(--ink);padding-top:8px}.mc b{font:400 30px/1 var(--serif);display:block}.mc span{font-size:12px;color:var(--mute)}
 .tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
@@ -77,7 +77,10 @@ select{font:inherit;font-size:13px;background:none;border:1px solid var(--ink);p
 .sec>*,.fpw>*,.idn>*,.fin>*{min-width:0}footer{padding:0 0 44px;font-size:12px;color:var(--mute)}
 a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 @media(max-width:860px){.w{padding:0 20px}nav,.rt span:first-child{display:none}.hd{gap:14px}.idn,.sec,.fpw,.two,.fin{grid-template-columns:1fr;gap:26px}.sec{padding:32px 0 40px}
-.chg3,.brk{grid-template-columns:1fr;gap:22px}.rk,.mg{grid-template-columns:repeat(2,1fr)}.tm{height:400px}.fp text{display:none}}
+.chg3,.brk{grid-template-columns:1fr;gap:22px}.rk,.mg{grid-template-columns:repeat(2,1fr)}.fp text{display:none}
+.tm{height:auto}.tr{flex-wrap:wrap;flex:none!important}.tr:first-child{height:180px}.tr+.tr .blk{flex:1 1 calc(33.33% - 2px)!important;height:104px}.blk{padding:9px 10px}.blk b{font-size:24px}
+.sg b{font-size:26px}.sg span{font-size:11px}.mc b{font-size:24px}
+table{font-size:13px}th,td{padding-left:8px;padding-right:8px}th:first-child,td:first-child{position:sticky;left:0;background:var(--paper);z-index:1;box-shadow:1px 0 0 var(--soft)}tbody tr:hover td:first-child{background:#E4DFD0}.tw{margin-right:-20px;padding-right:20px}}
 @media(prefers-reduced-motion:reduce){.fp g.b path{animation:none;stroke-dashoffset:0}*{transition:none!important}}
 </style></head><body>
 <header><div class="w hd">
@@ -150,7 +153,7 @@ let cur='hdfc',peer='ppfas',per=5;
 const inr=n=>n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=(n,d=1)=>(n>0?'+':n<0?'−':'')+Math.abs(n).toFixed(d)+'%';
 const cl=n=>n>0?'pos':n<0?'neg':'';
-const ql=i=>new Date(2026,8-3*(20-i),1).toLocaleString('en-GB',{month:'short',year:'2-digit'});
+const ql=i=>{const d=new Date(2026,8-3*(20-i),1);return d.toLocaleString('en-US',{month:'short'})+' ’'+String(d.getFullYear()).slice(2)};
 function fpBands(sc,W,H,N,step){
  const nb=sc.length,bw=W/nb,q=H/300;
  const s=x=>{let t=Math.min(nb-1,Math.max(0,x/bw-.5)),i=Math.floor(t),j=Math.min(nb-1,i+1),u=t-i;u=u*u*(3-2*u);return sc[i]+(sc[j]-sc[i])*u};
@@ -165,21 +168,22 @@ function chartHTML(){
  const f=D.funds[cur],n=per*4+1,s=21-n;
  const S=[['Fund',f.series,'#14130E',2.6,''],['Benchmark',D.bench,'#77746A',1.6,''],['Category',D.cat,'#A8A392',1.6,'5 4']].map(([l,a,c,w,d])=>{const v=a.slice(s);return{l,c,w,d,v:v.map(x=>x/v[0]*100)}});
  const all=S.flatMap(x=>x.v),mn=Math.floor(Math.min(...all)/5)*5-3,mx=Math.ceil(Math.max(...all)/5)*5+3;
- const M=innerWidth<700,W=M?520:900,H=380,L=4,R=M?64:150,T=30,B=28,X=i=>L+i*(W-L-R)/(n-1),Y=v=>T+(mx-v)*(H-T-B)/(mx-mn),st=Math.ceil((n-1)/6);
+ const M=innerWidth<700,W=M?520:900,H=380,L=4,R=M?64:150,T=40,B=28,X=i=>L+i*(W-L-R)/(n-1),Y=v=>T+(mx-v)*(H-T-B)/(mx-mn),st=Math.ceil((n-1)/6);
  let g='';for(let k=0;k<=4;k++){const v=mn+k*(mx-mn)/4;g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#CFCABB"/><text x="${L}" y="${Y(v)-5}" font-size="${M?15:11}" fill="#77746A">${v>=100?'+':'−'}${Math.abs(Math.round(v-100))}%</text>`}
  for(let i=0;i<n;i+=st)g+=`<text x="${X(i)}" y="${H-6}" font-size="${M?15:11}" fill="#77746A" text-anchor="${i?'middle':'start'}">${ql(s+i)}</text>`;
- S.forEach(x=>{g+=`<path d="${x.v.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('')}" fill="none" stroke="${x.c}" stroke-width="${x.w}" stroke-dasharray="${x.d}"/>`;const e=x.v[n-1];g+=`<text x="${W-R+10}" y="${Y(e)+4}" font-size="${M?15:12}" font-weight="600" fill="${x.c}">${M?'':x.l+' '}${sg(e-100,1)}</text>`});
+ const gap=M?18:16,ly=S.map((x,k)=>({k,y:Y(x.v[n-1])+4})).sort((a,b)=>a.y-b.y);for(let k=1;k<ly.length;k++)ly[k].y=Math.max(ly[k].y,ly[k-1].y+gap);const lyk={};ly.forEach(o=>lyk[o.k]=o.y);
+ S.forEach((x,k)=>{g+=`<path d="${x.v.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('')}" fill="none" stroke="${x.c}" stroke-width="${x.w}" stroke-dasharray="${x.d}"/>`;const e=x.v[n-1];g+=`<text x="${W-R+10}" y="${lyk[k]}" font-size="${M?15:12}" font-weight="600" fill="${x.c}">${M?'':x.l+' '}${sg(e-100,1)}</text>`});
  g+=f.notes.filter(a=>a.i>=s).map((a,k)=>{const x=X(a.i-s),y=Y(S[0].v[a.i-s]),up=k%2?1:-1,ty=y+up*30,ax=x>W-R-100?'end':x<90?'start':'middle';return`<g class="an"><line x1="${x}" x2="${x}" y1="${y}" y2="${ty-up*10}" stroke="#14130E" stroke-width=".8"/><circle cx="${x}" cy="${y}" r="5"/><text x="${x}" y="${ty}" style="text-anchor:${ax};font-size:${M?15:12}px">${a.t}</text></g>`}).join('');
  return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Rebased performance chart">${g}</svg>`;
 }
 function ddHTML(f){
- const fs=innerWidth<700?20:12,s=f.series;let m=0;const d=s.map(v=>(m=Math.max(m,v),v/m-1)),mn=Math.min(...d)*1.15,W=900,H=150,X=i=>i*W/20,Y=v=>12+v/mn*(H-34),k=d.indexOf(Math.min(...d));
+ const fs=innerWidth<700?32:12,s=f.series;let m=0;const d=s.map(v=>(m=Math.max(m,v),v/m-1)),mn=Math.min(...d)*1.15,W=900,H=innerWidth<700?190:150,X=i=>i*W/20,Y=v=>12+v/mn*(H-(innerWidth<700?56:34)),k=d.indexOf(Math.min(...d));
  const p=d.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('');
  return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Drawdown timeline"><path d="${p}L${W} 12L0 12Z" fill="#A3453A" opacity=".16"/><path d="${p}" fill="none" stroke="#A3453A" stroke-width="1.8"/><line x1="0" x2="${W}" y1="12" y2="12" stroke="#14130E"/><circle cx="${X(k)}" cy="${Y(d[k])}" r="4" fill="#A3453A"/><text x="${X(k)+10}" y="${Y(d[k])+4}" font-size="${fs}" fill="#A3453A">Deepest point, ${ql(k)}</text><text x="0" y="${H-4}" font-size="${fs}" fill="#77746A">${ql(0)}</text><text x="${W}" y="${H-4}" font-size="${fs}" fill="#77746A" text-anchor="end">${ql(20)}</text></svg>`;
 }
 function mapHTML(f){
  const a=[...f.sectors].sort((x,y)=>y[1]-x[1]),r1=a.slice(0,3),r2=a.slice(3),sum=r=>r.reduce((t,x)=>t+x[1],0);
- const row=r=>`<div class="tr" style="flex:${sum(r)}">${r.map(x=>{const t=Math.min(100,22+x[1]*3.4);return`<div class="blk" data-n="${x[0]}" data-w="${x[1]}" data-b="${x[2]}" style="flex:${x[1]};background:color-mix(in srgb,#14130E ${t}%,#EEEADF);color:${t>52?'#EEEADF':'#14130E'}"><span>${x[0]}</span><b>${x[1].toFixed(1)}%</b></div>`}).join('')}</div>`;
+ const row=r=>`<div class="tr" style="flex:${sum(r)}">${r.map(x=>{const t=Math.min(100,22+x[1]*3.4);return`<div class="blk" data-n="${x[0]}" data-w="${x[1]}" data-b="${x[2]}" title="${x[0]} ${x[1].toFixed(1)}%" style="flex:${x[1]};background:color-mix(in srgb,#14130E ${t}%,#EEEADF);color:${t>52?'#EEEADF':'#14130E'}"><span>${x[0]}</span><b>${x[1].toFixed(1)}%</b></div>`}).join('')}</div>`;
  return `<div class="tm">${row(r1)}${row(r2)}</div><div id="mapr">Hover a block to compare with the benchmark.</div>`;
 }
 function cmpHTML(){
