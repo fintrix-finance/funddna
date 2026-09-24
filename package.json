@@ -1,0 +1,1 @@
+{ "name": "funddna", "private": true, "version": "0.1.0", "engines": { "node": ">=20" }, "scripts": { "prebuild": "node scripts/prebuild.js" } }
