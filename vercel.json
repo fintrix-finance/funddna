@@ -1,0 +1,3 @@
+{
+  "functions": { "api/analysis.js": { "maxDuration": 300 }, "api/fund.js": { "maxDuration": 120 } }
+}
