@@ -175,7 +175,7 @@ function insideHTML(f){
  const A=D.analysis[cur];
  if(!A||A.loading)return `<p class="note mut">Researching the largest holdings: filings, results, investor presentations and news. This takes about a minute the first time.</p>`;
  if(A.failed)return `<p class="note">Research could not finish: ${esc(A.failed)}. Holdings, returns and risk below are still live.</p>`;
- if(!A.holdings||!A.holdings.length)return `<p class="note">${esc(A.error||'No analysis returned.')}</p>`;
+ if(!A.holdings||!A.holdings.length){if(A.error)console.warn('fundDNA analysis:',A.error);return `<p class="note mut">The written analysis is unavailable right now. Holdings, returns and sector data on this page are live; the analysis will appear here once the research step is back.</p>`}
  return `<div class="ins">${A.holdings.map(h=>{const r=h.returns||{};return `<article class="hl"><div class="hh"><h3>${esc(nm(h.name))}</h3><p class="lbl">${h.weight!=null?h.weight.toFixed(1)+'% of fund':''}${h.sector?' · '+esc(h.sector):''}${r['3M']!=null?` · 3M <span class="${cl(r['3M'])}">${sg(r['3M'])}</span>`:''}</p></div>
  <div class="hq"><div><p class="lbl">What changed</p>${claims(h.what_changed,A,'No sourced development found in the last 30 days.')}</div>
  <div><p class="lbl">What the market expected</p>${claims(h.expected,A,'No reliable consensus source found.')}</div>
@@ -204,7 +204,7 @@ function render(){
  const f=D.funds[cur];if(!f)return;
  if(peer===cur||!D.funds[peer])peer=ids.find(i=>i!==cur)||null;
  const st=f.stats,bk=f.book,A=D.analysis[cur]||{},P=A.portfolio||{};
- const wait='<span class="mut">Researching…</span>';
+ const wait=A.loading||!D.analysis[cur]?'<span class="mut">Researching…</span>':'<span class="mut">Not available for this run.</span>';
  const risks=(P.could_change||[]).slice(0,3);
  const S=f.sources||{},dt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
  $('#app').innerHTML=`
