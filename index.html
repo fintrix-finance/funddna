@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>fundDNA — Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EEEADF;--ink:#14130E;--mute:#77746A;--soft:#CFCABB;--acid:#C8E23A;--pos:#3B6A2A;--neg:#A3453A;--serif:'Newsreader',Georgia,'Times New Roman',serif;--sans:'Instrument Sans','Helvetica Neue',Arial,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:calc(60px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+*,*:before,*:after{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font:15px/1.55 var(--sans);font-variant-numeric:tabular-nums}
+.w{max-width:1280px;margin:auto;padding:0 32px}
+header{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--ink)}
+.hd{display:flex;align-items:center;gap:32px;height:52px}
+.logo{font:500 24px var(--serif);color:var(--ink);text-decoration:none;letter-spacing:-.02em}.logo b{font:600 22px var(--sans);letter-spacing:-.04em}
+nav{display:flex;gap:22px;font-size:14px}nav a{color:var(--mute);text-decoration:none}nav a:hover{color:var(--ink)}
+.srch{position:relative;flex:1;max-width:340px;margin-left:auto}
+.srch input{width:100%;font:inherit;font-size:14px;background:none;border:0;border-bottom:1px solid var(--ink);padding:6px 0;color:var(--ink);outline:0}
+.srch input:focus{border-bottom-width:2px}
+#res{position:absolute;left:0;right:0;top:100%;background:var(--paper);border:1px solid var(--ink);list-style:none;padding:0;display:none}
+#res li{padding:9px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--soft)}#res li:hover{background:var(--acid)}
+.rt{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--mute);white-space:nowrap}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mute);margin-right:6px}.dot.o{background:var(--pos)}
+.av{width:28px;height:28px;border:1px solid var(--ink);color:var(--ink);display:grid;place-items:center;font-size:11px;font-weight:600;border-radius:50%}
+.idn{padding:56px 0 40px;display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:end}
+h1{font:400 clamp(40px,6vw,76px)/.98 var(--serif);letter-spacing:-.025em}
+.plan{margin-top:14px;font-weight:500;font-size:13px;letter-spacing:.08em}
+.stamp{margin-top:6px;font-size:12px;color:var(--mute)}
+.fig{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 28px}
+.fig div{border-left:1px solid var(--ink);padding-left:14px}
+.fig b{display:block;font:400 clamp(28px,3.4vw,44px)/1.05 var(--serif);letter-spacing:-.02em}.fig span{font-size:12px;color:var(--mute);letter-spacing:.06em}
+.pos{color:var(--pos)}.neg{color:var(--neg)}
+.sec{display:grid;grid-template-columns:250px 1fr;gap:44px;padding:44px 0 56px;border-top:2px solid var(--ink)}
+.sec h2{font:500 25px/1.1 var(--serif);letter-spacing:.015em;text-transform:uppercase}
+.sec .sub{margin-top:10px;font:italic 400 17px/1.35 var(--serif);color:var(--mute)}
+.dark{background:var(--ink);color:var(--paper)}.dark .sec{border-top:0;padding-top:52px}.dark .sub,.dark .mut{color:#A7A395}
+.fpw{display:grid;grid-template-columns:1fr 250px;gap:40px}
+.fp{width:100%;height:auto;display:block;cursor:crosshair}
+.fp g.b path{fill:none;stroke:#EEEADF;stroke-width:1.8;opacity:.55;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 1.6s cubic-bezier(.3,.6,.2,1) forwards;transition:stroke .12s,opacity .12s}
+@keyframes dr{to{stroke-dashoffset:0}}
+.fp g.b path.a{stroke:#C8E23A;opacity:.9}.fp.h g.b path{opacity:.16}.fp.h g.b.on path{opacity:1;stroke:#C8E23A;stroke-width:2.6}
+.fp text{font:500 15px var(--sans);fill:#A7A395;text-anchor:middle}.fp g.on text{fill:#C8E23A}
+#fpr{margin-top:14px;font:italic 20px var(--serif);min-height:30px}#fpr b{font:600 14px var(--sans);font-style:normal;color:var(--acid);margin-right:10px}
+.pf{list-style:none;padding:0}.pf li{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #45423A;font:400 21px var(--serif)}
+.pf i{display:inline-flex;gap:3px}.pf i s{width:8px;height:8px;border:1px solid #A7A395}.pf i s.f{background:var(--acid);border-color:var(--acid)}
+.pf h3,.lbl{font:500 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}.dark .pf h3{color:#A7A395}
+.big{font:400 clamp(28px,3.6vw,46px)/1.16 var(--serif);letter-spacing:-.015em;max-width:24em}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:34px;font-size:16px;max-width:900px}.two p{max-width:60ch}
+.pb{display:flex;gap:6px;margin-bottom:12px}.pb button{font:500 13px var(--sans);background:none;border:1px solid var(--ink);padding:5px 14px;cursor:pointer;color:var(--ink)}
+.pb button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+svg text{font-family:var(--sans)}.ch{width:100%;height:auto;display:block;overflow:visible}
+.an circle{fill:var(--acid);stroke:var(--ink);stroke-width:1.5;transition:r .1s}.an:hover circle{r:7}.an text{font-size:12px;fill:var(--mute);text-anchor:middle;paint-order:stroke;stroke:#EEEADF;stroke-width:5px;stroke-linejoin:round}.an:hover text{fill:var(--ink);font-weight:600}
+.leg{display:flex;gap:22px;font-size:12px;color:var(--mute);margin-top:8px}.leg i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.drv{display:flex;gap:4px}.sg{transition:opacity .12s}.drv:hover .sg{opacity:.45}.drv .sg:hover{opacity:1}
+.sg i{display:block;height:64px}.sg b{display:block;font:400 clamp(28px,3.4vw,46px)/1.1 var(--serif);margin-top:8px}.sg span{font-size:12px;color:var(--mute)}
+.tm{display:flex;flex-direction:column;gap:3px;height:340px}.tr{display:flex;gap:3px}
+.blk{word-break:break-word;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;min-width:0;cursor:default;transition:background .12s}
+.blk:hover{background:var(--acid)!important;color:var(--ink)!important}.blk b{font:400 clamp(20px,2.6vw,34px)/1 var(--serif)}.blk span{font-size:12px}
+#mapr{margin-top:12px;font-size:14px;color:var(--mute);min-height:22px}
+.mc{display:flex;gap:3px;margin-top:8px}.mc div{border-top:6px solid var(--ink);padding-top:8px}.mc b{font:400 30px/1 var(--serif);display:block}.mc span{font-size:12px;color:var(--mute)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th{font:500 11px var(--sans);letter-spacing:.1em;color:var(--mute);text-align:right;padding:0 10px 9px;border-bottom:1px solid var(--ink)}td{padding:11px 10px;border-bottom:1px solid var(--soft);text-align:right}
+th:first-child,td:first-child,.bk th:nth-child(3),.bk td:nth-child(3){text-align:left}td:first-child{font-weight:500}.cmp th{font:500 13px/1.3 var(--sans);letter-spacing:0;color:var(--ink);vertical-align:bottom}tbody tr:hover{background:#E4DFD0}
+.chg3{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}.chg3>div{border-top:1px solid var(--ink);padding-top:10px}
+.chg3 p{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--soft);font-size:14px}.chg3 h3{font:400 22px var(--serif)}
+.rk{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:26px}.rk div{border-left:1px solid var(--ink);padding-left:14px}
+.rk b{display:block;font:400 clamp(30px,3.6vw,48px)/1.05 var(--serif)}.rk span{font-size:12px;color:var(--mute)}
+.note{max-width:62ch;font-size:16px;margin-bottom:26px}.cap{font-size:12px;color:var(--mute);margin-top:6px}
+.brk{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}.brk div{border-top:1px solid var(--ink);padding-top:12px}
+.brk b{font:400 46px/1 var(--serif);color:var(--mute)}.brk h3{font:600 14px var(--sans);letter-spacing:.04em;margin:10px 0 6px;text-transform:uppercase}.brk p{font-size:15px}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.mg dt{font-size:12px;color:var(--mute)}.mg dd{font:400 26px/1.2 var(--serif)}
+select{font:inherit;font-size:13px;background:none;border:1px solid var(--ink);padding:3px 6px;color:var(--ink)}
+.fin{padding:64px 0 40px;border-top:2px solid var(--ink);display:grid;grid-template-columns:1fr 420px;gap:44px;align-items:end}
+.fin h2{font:500 25px var(--serif);text-transform:uppercase;letter-spacing:.015em;margin-bottom:22px}.fin .big{font-size:clamp(32px,4.6vw,62px)}
+.fin .pl{margin-top:26px;font-size:14px;font-weight:500}.fin .pl span{color:var(--mute);margin-right:8px}
+.fin .fp g.b path{stroke:#14130E;opacity:.85;animation:none;stroke-dashoffset:0;stroke-width:2.2}
+.sec>*,.fpw>*,.idn>*,.fin>*{min-width:0}footer{padding:0 0 44px;font-size:12px;color:var(--mute)}
+a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media(max-width:860px){.w{padding:0 20px}nav,.rt span:first-child{display:none}.hd{gap:14px}.idn,.sec,.fpw,.two,.fin{grid-template-columns:1fr;gap:26px}.sec{padding:32px 0 40px}
+.chg3,.brk{grid-template-columns:1fr;gap:22px}.rk,.mg{grid-template-columns:repeat(2,1fr)}.tm{height:400px}.fp text{display:none}}
+@media(prefers-reduced-motion:reduce){.fp g.b path{animation:none;stroke-dashoffset:0}*{transition:none!important}}
+</style></head><body>
+<header><div class="w hd">
+<a class="logo" href="#top">fund<b>DNA</b></a>
+<nav><a href="#top">Research</a><a href="#ctx">Compare</a><a href="#top" title="Not in this build">Watchlist</a></nav>
+<div class="srch"><input id="q" placeholder="Search funds" autocomplete="off" aria-label="Search funds"><ul id="res"></ul></div>
+<div class="rt"><span id="mk"></span><span class="av" title="Profile">MR</span></div></div></header>
+<main id="app"></main>
+<script>
+/* ===== DATA LAYER — replace this object; the UI renders only from it ===== */
+const mockFundData={
+asOf:'24 Sep 2026',
+dims:['Growth','Quality','Value','Momentum','Concentration','Stability','Liquidity','Cyclicality'],
+driverNames:['Earnings Growth','Sector Allocation','Stock Selection','Valuation Re-rating'],
+bench:[100,104,108,103,110,116,119,114,109,106,112,120,127,132,137,142,145,150,155,161,165],
+cat:[100,104,109,104,111,117,121,115,110,107,113,121,128,134,139,145,148,154,160,167,172],
+refs:{
+ cat:{name:'Category (Flexi Cap)',r1:16.2,r3:15.1,vol:14.2,beta:.97,sharpe:1.08,dd:-19.6,er:1.05,top10:38.4,large:61},
+ bench:{name:'Benchmark (Nifty 500 TRI)',r1:13.8,r3:14.2,vol:13.6,beta:1,sharpe:.96,dd:-20.7,er:0,top10:31.5,large:72}},
+funds:{
+hdfc:{name:'HDFC Flexi Cap Fund',plan:'DIRECT • GROWTH',nav:2184.32,aum:82430,stats:{r1:18.42,r3:16.9,vol:14.8,beta:.94,sharpe:1.21,dd:-18.4,er:.72,top10:44.9,large:68},
+ series:[100,105,110,104,113,120,124,118,111,107,114,123,131,138,144,151,154,161,168,176,182.4],
+ notes:[{i:5,t:'Financials rerated'},{i:9,t:'Market correction'},{i:13,t:'Earnings acceleration'},{i:18,t:'Mid-cap exposure increased'}],
+ dna:[72,78,44,61,58,66,81,49],
+ profile:[['Growth-led',4],['Large-cap tilted',4],['Quality biased',4],['Moderate concentration',3],['Moderate turnover',3],['Medium-high risk',4]],
+ statement:'A diversified flexi-cap strategy with a large-cap core, meaningful financial exposure and selective participation in industrial and technology businesses.',
+ interp:['Most of the return traces to earnings compounding in the largest holdings, not to a valuation call. Growth and quality scores are high while value is low: the manager pays for durability.','Sector weights lean into banks and capital goods against the benchmark, and the 24% mid-cap sleeve is where stock selection has added the most, and where the fund is least liquid.'],
+ drivers:[38,24,20,18],
+ sectors:[['Financials',24.8,31.2],['Technology',14.2,13.5],['Industrials',12.7,9.8],['Consumer',10.4,11.9],['Healthcare',8.6,5.4],['Energy',7.9,9.1],['Materials',6.3,7.6],['Communication',5.2,4.1],['Other & cash',9.9,7.4]],
+ mcap:[68,24,8],
+ book:[['HDFC Bank',9.4,'Financials',1.2,4.1,.3],['ICICI Bank',7.8,'Financials',3.4,8.2,.5],['Larsen & Toubro',4.8,'Industrials',2.7,9.4,.8],['Infosys',4.6,'Technology',-1.9,2.2,-.6],['Reliance Industries',4.2,'Energy',.8,5,-.2],['Bharti Airtel',3.9,'Communication',4.6,11.3,.9],['Axis Bank',3.4,'Financials',2.1,6,-.4],['Sun Pharma',3.1,'Healthcare',2,6.8,3.1,1],['TCS',3,'Technology',-2.4,-1.1,-.9],['Mahindra & Mahindra',2.6,'Consumer',5.3,12.6,2.6,1]],
+ riskNote:'Drawdowns cluster where financials and mid-caps fall together. Beta below one has cushioned the index falls, but the fund gave back most of a rally in the last correction before recovering.',
+ risks:[['Financials concentration','24.8% sector exposure means banking-sector weakness could materially affect relative performance.'],['Valuation compression','Growth-oriented holdings remain sensitive to changes in market multiples.'],['Mid-cap exposure','24% allocation increases sensitivity to liquidity and economic-cycle conditions.']],
+ mgr:{name:'Prashant Jain',tenure:'6.4 years',exp:'18+ years',turn:'Moderate'},
+ line:'A growth-oriented flexi-cap portfolio with a large-cap core, meaningful financial exposure and moderate concentration.'},
+ppfas:{name:'Parag Parikh Flexi Cap Fund',plan:'DIRECT • GROWTH',nav:88.41,aum:104220,stats:{r1:17.7,r3:18.4,vol:10.9,beta:.78,sharpe:1.52,dd:-12.1,er:.63,top10:42,large:74},
+ series:[100,103,108,105,112,119,123,119,113,110,117,126,134,141,148,154,158,165,171,179,186],
+ notes:[{i:5,t:'Quality bid'},{i:9,t:'Market correction'}],
+ dna:[66,88,38,52,74,82,70,32],
+ profile:[['Quality-led',5],['Large-cap tilted',4],['Growth biased',3],['High concentration',4],['Low turnover',1],['Medium risk',3]],
+ statement:'A concentrated, quality-first portfolio that holds domestic compounders alongside a steady allocation to overseas platforms and cash.',
+ interp:['Stock selection carries more of the return than in the category, with a low-turnover book that lets earnings compound.','Defensive weights in utilities and consumer names dampen drawdowns; the cost is less participation in cyclical rallies.'],
+ drivers:[31,15,38,16],
+ sectors:[['Financials',27.4,31.2],['Technology',17.9,13.5],['Consumer',14.6,11.9],['Healthcare',9.8,5.4],['Industrials',7.6,9.8],['Other & cash',22.7,28.2]],
+ mcap:[74,18,8],
+ book:[['HDFC Bank',8.1,'Financials',1.2,4.1,.2],['Bajaj Holdings',6.4,'Financials',1.8,5.5,-.3],['Coal India',5.6,'Energy',-.8,1.9,-.5],['Power Grid',5.1,'Utilities',.9,3.2,.4],['ITC',4.7,'Consumer',1.1,3.7,.6],['Zomato',3.2,'Consumer',6.2,15.4,3.2,1]],
+ riskNote:'Low volatility and shallow drawdowns come from defensive weights and cash. The risk is relative: in a fast cyclical rally the fund can lag.',
+ risks:[['Concentration','Ten holdings make up 42% of assets, so single-stock misses show up quickly.'],['Cash drag','A large cash allocation can trail in sharp rallies.'],['Key-person dependence','Process is closely tied to a small team.']],
+ mgr:{name:'Rajeev Thakkar',tenure:'10.8 years',exp:'25+ years',turn:'Low'},
+ line:'A quality-first, concentrated flexi-cap portfolio with low turnover and a defensive tilt.'},
+kotak:{name:'Kotak Flexicap Fund',plan:'DIRECT • GROWTH',nav:96.07,aum:52310,stats:{r1:15.9,r3:15.4,vol:14.1,beta:.96,sharpe:1.09,dd:-19,er:.58,top10:47.2,large:66},
+ series:[100,105,109,102,111,117,120,113,106,102,108,116,123,130,136,142,145,151,157,163,168],
+ notes:[{i:9,t:'Market correction'},{i:14,t:'Cyclicals rerated'}],
+ dna:[69,64,52,58,50,60,77,63],
+ profile:[['Blend',3],['Large-cap tilted',3],['Cyclical lean',4],['Moderate concentration',3],['Moderate turnover',3],['Medium-high risk',4]],
+ statement:'A blended flexi-cap strategy with a bank-heavy core and a cyclical lean in industrials and energy.',
+ interp:['Returns follow the domestic cycle closely: capital goods and banks have led, defensives have lagged.','Value and growth scores sit near the middle, so the fund tends to track the category rather than diverge from it.'],
+ drivers:[35,27,18,20],
+ sectors:[['Financials',30.2,31.2],['Industrials',13.4,9.8],['Technology',11.8,13.5],['Consumer',11.1,11.9],['Energy',8.3,9.1],['Other & cash',25.2,24.5]],
+ mcap:[66,25,9],
+ book:[['ICICI Bank',8.9,'Financials',3.4,8.2,.4],['HDFC Bank',8.6,'Financials',1.2,4.1,-.2],['Infosys',5,'Technology',-1.9,2.2,.5],['Larsen & Toubro',4.4,'Industrials',2.7,9.4,.7],['Reliance Industries',4.1,'Energy',.8,5,-.6],['Trent',2.2,'Consumer',5.1,13,2.2,1]],
+ riskNote:'The cyclical lean deepens drawdowns when growth expectations fall; recoveries have been quick but uneven.',
+ risks:[['Cycle sensitivity','Industrials and energy make earnings dependent on the domestic capex cycle.'],['Bank concentration','Financials at 30% keep results tied to credit conditions.'],['Mid-cap liquidity','A 25% mid-cap sleeve can be hard to exit in stress.']],
+ mgr:{name:'Harsha Upadhyaya',tenure:'8.2 years',exp:'22+ years',turn:'Moderate'},
+ line:'A blended flexi-cap portfolio with a bank-heavy core and a cyclical lean.'}}
+};
+/* ===== RENDERING ===== */
+const D=mockFundData,$=s=>document.querySelector(s),ids=Object.keys(D.funds);
+let cur='hdfc',peer='ppfas',per=5;
+const inr=n=>n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sg=(n,d=1)=>(n>0?'+':n<0?'−':'')+Math.abs(n).toFixed(d)+'%';
+const cl=n=>n>0?'pos':n<0?'neg':'';
+const ql=i=>new Date(2026,8-3*(20-i),1).toLocaleString('en-GB',{month:'short',year:'2-digit'});
+function fpBands(sc,W,H,N,step){
+ const nb=sc.length,bw=W/nb,q=H/300;
+ const s=x=>{let t=Math.min(nb-1,Math.max(0,x/bw-.5)),i=Math.floor(t),j=Math.min(nb-1,i+1),u=t-i;u=u*u*(3-2*u);return sc[i]+(sc[j]-sc[i])*u};
+ const y=(x,k)=>{const a=s(x);return 14+k*(H-28)/(N-1)+(2+a*10)*q*Math.sin(x/(34-a*20)+k*.55)+(1.5+a*4)*q*Math.sin(x/11-k*.9)};
+ return sc.map((_,b)=>{let o='';for(let k=0;k<N;k++){const m=Math.round(bw/step);let d='';for(let i=0;i<=m;i++){const x=b*bw+bw*i/m;d+=(i?'L':'M')+x.toFixed(1)+' '+y(x,k).toFixed(1)}o+=`<path ${k%7==3?'class="a" ':''}pathLength="1" d="${d}" style="animation-delay:${k*35}ms"/>`}return o});
+}
+function fpSVG(f){
+ const sc=f.dna.map(v=>v/100),b=fpBands(sc,1000,400,32,4),bw=125;
+ return `<svg class="fp" id="fp" viewBox="0 0 1000 430" role="img" aria-label="Fund fingerprint across eight dimensions">${b.map((p,i)=>`<g class="b" data-i="${i}">${p}<text x="${i*bw+bw/2}" y="424">${D.dims[i]}</text><rect x="${i*bw}" y="0" width="${bw}" height="430" fill="transparent"/></g>`).join('')}</svg>`;
+}
+function chartHTML(){
+ const f=D.funds[cur],n=per*4+1,s=21-n;
+ const S=[['Fund',f.series,'#14130E',2.6,''],['Benchmark',D.bench,'#77746A',1.6,''],['Category',D.cat,'#A8A392',1.6,'5 4']].map(([l,a,c,w,d])=>{const v=a.slice(s);return{l,c,w,d,v:v.map(x=>x/v[0]*100)}});
+ const all=S.flatMap(x=>x.v),mn=Math.floor(Math.min(...all)/5)*5-3,mx=Math.ceil(Math.max(...all)/5)*5+3;
+ const M=innerWidth<700,W=M?520:900,H=380,L=4,R=M?64:150,T=30,B=28,X=i=>L+i*(W-L-R)/(n-1),Y=v=>T+(mx-v)*(H-T-B)/(mx-mn),st=Math.ceil((n-1)/6);
+ let g='';for(let k=0;k<=4;k++){const v=mn+k*(mx-mn)/4;g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#CFCABB"/><text x="${L}" y="${Y(v)-5}" font-size="${M?15:11}" fill="#77746A">${v>=100?'+':'−'}${Math.abs(Math.round(v-100))}%</text>`}
+ for(let i=0;i<n;i+=st)g+=`<text x="${X(i)}" y="${H-6}" font-size="${M?15:11}" fill="#77746A" text-anchor="${i?'middle':'start'}">${ql(s+i)}</text>`;
+ S.forEach(x=>{g+=`<path d="${x.v.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('')}" fill="none" stroke="${x.c}" stroke-width="${x.w}" stroke-dasharray="${x.d}"/>`;const e=x.v[n-1];g+=`<text x="${W-R+10}" y="${Y(e)+4}" font-size="${M?15:12}" font-weight="600" fill="${x.c}">${M?'':x.l+' '}${sg(e-100,1)}</text>`});
+ g+=f.notes.filter(a=>a.i>=s).map((a,k)=>{const x=X(a.i-s),y=Y(S[0].v[a.i-s]),up=k%2?1:-1,ty=y+up*30,ax=x>W-R-100?'end':x<90?'start':'middle';return`<g class="an"><line x1="${x}" x2="${x}" y1="${y}" y2="${ty-up*10}" stroke="#14130E" stroke-width=".8"/><circle cx="${x}" cy="${y}" r="5"/><text x="${x}" y="${ty}" style="text-anchor:${ax};font-size:${M?15:12}px">${a.t}</text></g>`}).join('');
+ return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Rebased performance chart">${g}</svg>`;
+}
+function ddHTML(f){
+ const fs=innerWidth<700?20:12,s=f.series;let m=0;const d=s.map(v=>(m=Math.max(m,v),v/m-1)),mn=Math.min(...d)*1.15,W=900,H=150,X=i=>i*W/20,Y=v=>12+v/mn*(H-34),k=d.indexOf(Math.min(...d));
+ const p=d.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('');
+ return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Drawdown timeline"><path d="${p}L${W} 12L0 12Z" fill="#A3453A" opacity=".16"/><path d="${p}" fill="none" stroke="#A3453A" stroke-width="1.8"/><line x1="0" x2="${W}" y1="12" y2="12" stroke="#14130E"/><circle cx="${X(k)}" cy="${Y(d[k])}" r="4" fill="#A3453A"/><text x="${X(k)+10}" y="${Y(d[k])+4}" font-size="${fs}" fill="#A3453A">Deepest point, ${ql(k)}</text><text x="0" y="${H-4}" font-size="${fs}" fill="#77746A">${ql(0)}</text><text x="${W}" y="${H-4}" font-size="${fs}" fill="#77746A" text-anchor="end">${ql(20)}</text></svg>`;
+}
+function mapHTML(f){
+ const a=[...f.sectors].sort((x,y)=>y[1]-x[1]),r1=a.slice(0,3),r2=a.slice(3),sum=r=>r.reduce((t,x)=>t+x[1],0);
+ const row=r=>`<div class="tr" style="flex:${sum(r)}">${r.map(x=>{const t=Math.min(100,22+x[1]*3.4);return`<div class="blk" data-n="${x[0]}" data-w="${x[1]}" data-b="${x[2]}" style="flex:${x[1]};background:color-mix(in srgb,#14130E ${t}%,#EEEADF);color:${t>52?'#EEEADF':'#14130E'}"><span>${x[0]}</span><b>${x[1].toFixed(1)}%</b></div>`}).join('')}</div>`;
+ return `<div class="tm">${row(r1)}${row(r2)}</div><div id="mapr">Hover a block to compare with the benchmark.</div>`;
+}
+function cmpHTML(){
+ const f=D.funds[cur],p=D.funds[peer],c=[['1Y return','r1','%'],['3Y annualised','r3','%'],['Volatility','vol','%'],['Beta','beta',''],['Sharpe','sharpe',''],['Max drawdown','dd','%'],['Expense ratio','er','%'],['Top-10 weight','top10','%'],['Large-cap share','large','%']];
+ const v=(o,k,u)=>o[k].toFixed(['sharpe','er','beta'].includes(k)?2:1).replace('-','−')+u;
+ return `<div class="tw"><table class="cmp"><thead><tr><th></th><th>${f.name}</th><th>${D.refs.cat.name}</th><th>${D.refs.bench.name}</th><th><select id="peer" aria-label="Peer fund">${ids.filter(i=>i!==cur).map(i=>`<option value="${i}" ${i===peer?'selected':''}>${D.funds[i].name}</option>`).join('')}</select></th></tr></thead><tbody>${c.map(([l,k,u])=>`<tr><td>${l}</td><td>${v(f.stats,k,u)}</td><td>${v(D.refs.cat,k,u)}</td><td>${v(D.refs.bench,k,u)}</td><td>${v(p.stats,k,u)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+const sec=(t,sub,body,id='')=>`<div class="w"><section class="sec" ${id?`id="${id}"`:''}><div><h2>${t}</h2><p class="sub">${sub}</p></div><div>${body}</div></section></div>`;
+function render(){
+ if(peer===cur)peer=ids.find(i=>i!==cur);
+ const f=D.funds[cur],st=f.stats,bk=f.book,fmt=r=>`<p><span>${r[0]}</span><span class="${cl(r[5])}">${sg(r[5],1)}</span></p>`;
+ const add=bk.filter(r=>r[6]),inc=bk.filter(r=>!r[6]&&r[5]>0),red=bk.filter(r=>r[5]<0);
+ $('#app').innerHTML=`
+ <div class="w"><section id="top" class="idn"><div><h1>${f.name}</h1><p class="plan">${f.plan}</p><p class="stamp">Updated ${D.asOf} · Mock data</p></div>
+ <div class="fig"><div><b>₹${inr(f.nav)}</b><span>NAV</span></div><div><b class="${cl(st.r1)}">${sg(st.r1,2)}</b><span>1Y</span></div><div><b>₹${f.aum.toLocaleString('en-IN')} Cr</b><span>AUM</span></div><div><b>${st.er.toFixed(2)}%</b><span>EXPENSE RATIO</span></div></div></section></div>
+ <div class="dark"><div class="w"><section class="sec"><div><h2>The DNA</h2><p class="sub">Eight measured traits, drawn as one pattern. Each fund produces its own.</p></div>
+ <div class="fpw"><div>${fpSVG(f)}<div id="fpr" class="mut">Hover or tap a band to read the trait.</div></div>
+ <div class="pf"><h3>DNA profile</h3><ul class="pf">${f.profile.map(([l,n])=>`<li>${l}<i>${[1,2,3,4,5].map(k=>`<s class="${k<=n?'f':''}"></s>`).join('')}</i></li>`).join('')}</ul></div></div></section></div></div>
+ ${sec('What is this fund really?','The analyst’s read',`<p class="big">${f.statement}</p><div class="two"><div><p class="lbl">FundDNA interpretation</p><p>${f.interp[0]}</p></div><p style="align-self:end">${f.interp[1]}</p></div>`)}
+ ${sec('Performance','Where the return came from',`<div class="pb" role="group" aria-label="Period">${[1,3,5].map(y=>`<button data-y="${y}" aria-pressed="${y===per}">${y}Y</button>`).join('')}</div><div id="chart">${chartHTML()}</div><div class="leg"><span><i style="border-color:#14130E"></i>Fund</span><span><i style="border-color:#77746A"></i>Benchmark</span><span><i style="border-color:#A8A392;border-top-style:dashed"></i>Category</span><span>Rebased to 0 at period start · quarter-end points</span></div>`)}
+ ${sec('What is driving returns?','Attribution of the 5-year return',`<div class="drv">${f.drivers.map((v,i)=>`<div class="sg" style="flex:${v}"><i style="background:${['#C8E23A','#14130E','#77746A','#B8B3A3'][i]}"></i><b>${v}%</b><span>${D.driverNames[i]}</span></div>`).join('')}</div>`)}
+ ${sec('Where the money is','Sector exposure, sized by weight',`${mapHTML(f)}<p class="lbl" style="margin-top:30px">Market cap</p><div class="mc">${['Large','Mid','Small'].map((n,i)=>`<div style="flex:${f.mcap[i]}"><b>${f.mcap[i]}%</b><span>${n}</span></div>`).join('')}</div>`)}
+ ${sec('The book','Largest positions and recent moves',`<div class="tw"><table class="bk"><thead><tr><th>COMPANY</th><th>WEIGHT</th><th>SECTOR</th><th>1M</th><th>3M</th><th>POSITION CHANGE</th></tr></thead><tbody>${bk.map(r=>`<tr title="${(r[1]-r[5]).toFixed(1)}% → ${r[1].toFixed(1)}% of assets"><td>${r[0]}${r[6]?' <span class="mut" style="font-size:11px">new</span>':''}</td><td>${r[1].toFixed(1)}%</td><td>${r[2]}</td><td class="${cl(r[3])}">${sg(r[3])}</td><td class="${cl(r[4])}">${sg(r[4])}</td><td class="${cl(r[5])}">${r[5]>0?'↑':'↓'} ${sg(r[5])}</td></tr>`).join('')}</tbody></table></div>`)}
+ ${sec('What changed','Portfolio activity this month',`<div class="chg3"><div><h3>Added</h3>${add.map(fmt).join('')||'<p>None</p>'}</div><div><h3>Increased</h3>${inc.map(fmt).join('')||'<p>None</p>'}</div><div><h3>Reduced</h3>${red.map(fmt).join('')||'<p>None</p>'}</div></div>`)}
+ ${sec('Where it can hurt','Risk in the numbers',`<div class="rk"><div><b>${st.vol.toFixed(1)}%</b><span>Volatility</span></div><div><b>${st.beta.toFixed(2)}</b><span>Beta</span></div><div><b class="neg">${sg(st.dd)}</b><span>Maximum drawdown</span></div><div><b>${st.sharpe.toFixed(2)}</b><span>Sharpe</span></div></div><p class="note">${f.riskNote}</p>${ddHTML(f)}<p class="cap">Drawdown from prior peak, quarter-end observations.</p>`)}
+ ${sec('What could break the thesis?','Three things to watch',`<div class="brk">${f.risks.map((r,i)=>`<div><b>0${i+1}</b><h3>${r[0]}</h3><p>${r[1]}</p></div>`).join('')}</div>`)}
+ ${sec('Who is running the money?','',`<dl class="mg"><div><dt>Manager</dt><dd>${f.mgr.name}</dd></div><div><dt>Fund tenure</dt><dd>${f.mgr.tenure}</dd></div><div><dt>Experience</dt><dd>${f.mgr.exp}</dd></div><div><dt>Portfolio turnover</dt><dd>${f.mgr.turn}</dd></div></dl>`)}
+ ${sec('Put it in context','Same measures, side by side',`<div id="cmp">${cmpHTML()}</div>`,'ctx')}
+ <div class="w"><section class="fin"><div><h2>The fund, in one line</h2><p class="big">${f.line}</p><p class="pl"><span>DNA profile</span>${f.profile.slice(0,4).map(p=>p[0]).join(' · ')}</p></div>
+ <svg class="fp" viewBox="0 0 600 300" aria-hidden="true">${fpBands(f.dna.map(v=>v/100),600,300,24,6).map(p=>`<g class="b">${p}</g>`).join('')}</svg></section><footer>Mock data for interface development. Not investment advice.</footer></div>`;
+}
+/* ===== INTERACTION ===== */
+const app=$('#app');
+app.addEventListener('mouseover',e=>{
+ const b=e.target.closest('.fp g[data-i]'),k=e.target.closest('.blk');
+ if(b){const fp=$('#fp'),i=+b.dataset.i,v=D.funds[cur].dna[i];fp.classList.add('h');fp.querySelectorAll('g.b').forEach(g=>g.classList.toggle('on',g===b));$('#fpr').innerHTML=`<b>${D.dims[i]} ${v}</b>${v>=70?'High':v>=50?'Moderate':'Low'} relative to the category`}
+ if(k){const d=(k.dataset.w-k.dataset.b).toFixed(1);$('#mapr').textContent=`${k.dataset.n}: ${k.dataset.w}% of assets · benchmark ${k.dataset.b}% · ${d>0?'+':d<0?'−':''}${Math.abs(d)} pts`}
+});
+app.addEventListener('mouseout',e=>{if(e.target.closest('#fp')&&!e.relatedTarget?.closest?.('#fp')){const fp=$('#fp');fp.classList.remove('h');fp.querySelectorAll('g.b').forEach(g=>g.classList.remove('on'));$('#fpr').textContent='Hover or tap a band to read the trait.'}});
+app.addEventListener('click',e=>{const b=e.target.closest('.pb button');if(!b)return;per=+b.dataset.y;$('#chart').innerHTML=chartHTML();app.querySelectorAll('.pb button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+app.addEventListener('change',e=>{if(e.target.id==='peer'){peer=e.target.value;$('#cmp').innerHTML=cmpHTML()}});
+const q=$('#q'),res=$('#res');
+const pick=id=>{cur=id;q.value='';res.style.display='none';render();scrollTo(0,0)};
+q.addEventListener('input',()=>{const t=q.value.trim().toLowerCase(),m=ids.filter(i=>D.funds[i].name.toLowerCase().includes(t));res.innerHTML=m.map(i=>`<li data-id="${i}">${D.funds[i].name}</li>`).join('')||'<li>No fund matches</li>';res.style.display=t?'block':'none'});
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){const l=res.querySelector('li[data-id]');if(l)pick(l.dataset.id)}});
+res.addEventListener('click',e=>{const l=e.target.closest('li[data-id]');if(l)pick(l.dataset.id)});
+document.addEventListener('click',e=>{if(!e.target.closest('.srch'))res.style.display='none'});
+(()=>{const i=new Date(Date.now()+(new Date().getTimezoneOffset()+330)*6e4),m=i.getHours()*60+i.getMinutes(),o=i.getDay()%6&&m>=555&&m<930;$('#mk').innerHTML=`<i class="dot ${o?'o':''}"></i>NSE ${o?'open':'closed'}`})();
+addEventListener('resize',()=>{const c=$('#chart');if(c)c.innerHTML=chartHTML()});render();
+</script></body></html>
