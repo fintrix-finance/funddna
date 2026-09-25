@@ -1,1 +1,1 @@
-{ "name": "funddna", "private": true, "version": "0.1.0", "engines": { "node": ">=20" }, "scripts": { "prebuild": "node scripts/prebuild.js" } }
+{ "name": "funddna", "private": true, "version": "0.2.0", "engines": { "node": ">=20" }, "scripts": { "prebuild": "node scripts/prebuild.js" }, "dependencies": { "@vercel/blob": "^2.8.0", "@vercel/functions": "^3.9.9" } }
