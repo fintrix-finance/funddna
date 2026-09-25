@@ -1,4 +1,4 @@
-const ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://fintrix-finance.github.io,http://localhost:8080,http://localhost:8765').split(',');
+const ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://funddna.github.io,http://localhost:8080,http://localhost:8765').split(',');
 function send(req, res, status, body, maxAge = 0) {
   const o = req.headers.origin; if (o && (ORIGINS.includes(o) || ORIGINS.includes('*'))) res.setHeader('Access-Control-Allow-Origin', o);
   res.setHeader('Vary', 'Origin'); res.setHeader('Content-Type', 'application/json; charset=utf-8');
