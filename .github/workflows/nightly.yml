@@ -17,6 +17,7 @@ jobs:
       - name: Build analysis JSON for popular funds
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-3.8-flash
         run: node scripts/prebuild.js
       - name: Commit data
         run: |
