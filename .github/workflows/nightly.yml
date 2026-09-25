@@ -8,18 +8,21 @@ permissions:
 jobs:
   prebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Build analysis JSON for popular funds
+        id: build
+        continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: gemini-3.8-flash
         run: node scripts/prebuild.js
       - name: Commit data
+        if: always()
         run: |
           git config user.name "funddna-bot"
           git config user.email "actions@users.noreply.github.com"
@@ -27,3 +30,13 @@ jobs:
           git diff --cached --quiet || git commit -m "Nightly data $(date -u +%F)"
           git pull --rebase
           git push
+      - name: Confirm all analyses refreshed
+        if: always()
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const funds = ['118955','122639','120166','118989','120503','119598'];
+          const missing = funds.filter(c => { try { const a = JSON.parse(fs.readFileSync(`data/analysis/${c}.json`)); return !a.holdings?.length || Date.now() - new Date(a.generatedAt) > 30 * 3600e3; } catch { return true; } });
+          console.log(`Fresh analysis: ${funds.length - missing.length}/${funds.length}; missing/stale: ${missing.join(',') || 'none'}`);
+          if (missing.length) process.exitCode = 1;
+          NODE
