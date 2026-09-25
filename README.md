@@ -12,7 +12,7 @@ Decodes what is happening **inside** a mutual fund: its largest holdings, what c
 | UI | `index.html` | The fundDNA dashboard (GitHub Pages) |
 
 ## Hosting
-- Dashboard: GitHub Pages (this repo).
+- Dashboard: GitHub Pages (this repo), https://funddna.github.io/
 - API: Vercel (`api/`): `/api/search?q=`, `/api/fund?code=`, `/api/analysis?code=`, `/api/health`.
 - Nightly: GitHub Actions pre-builds popular funds into `data/analysis/` and saves monthly holdings snapshots.
 - `GEMINI_API_KEY` lives only in Vercel env settings and GitHub Actions secrets.
