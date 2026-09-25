@@ -120,7 +120,7 @@ function toUI(x){
   book:eq.slice(0,10).map(h=>[h.name,h.weight,h.sector,h.returns?h.returns['1M']:null,h.returns?h.returns['3M']:null,null]),
   holdings:x.holdings,mgr:{name:mg.map(m=>m.name).join(', ')||'—',tenure:yrs,count:x.holdingsCount,turn:x.turnover!=null?x.turnover+'%':'—'}};
 }
-async function getJ(u){const r=await fetch(u);const j=await r.json().catch(()=>({error:'Bad response'}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
+async function getJ(u,o){const r=await fetch(u,o);const j=await r.json().catch(()=>({error:'Bad response'}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
 /* ===== RENDERING ===== */
 const $=s=>document.querySelector(s);let ids=[];
 let cur=null,peer=null,per=5,pper='3M';
@@ -173,7 +173,8 @@ function srcLinks(ids,A){const m={};(A.sources||[]).forEach(x=>m[x.id]=x);return
 function claims(list,A,empty){return list&&list.length?list.map(c=>`<p>${esc(c.text)} <span class="srcs">${srcLinks(c.src,A)}</span></p>`).join(''):`<p class="mut">${empty}</p>`}
 function insideHTML(f){
  const A=D.analysis[cur];
- if(!A||A.loading)return `<p class="note mut">Researching the largest holdings: filings, results, investor presentations and news. This takes about a minute the first time.</p>`;
+ if(!A||A.loading)return `<p class="note mut">${A&&A.checkBack?'Preparing the analysis for this fund: reading filings, results, investor presentations and news for its largest holdings. This page checks again on its own every 20 seconds; it usually takes one to two minutes.':'Looking for this fund’s analysis…'}</p>`;
+ if(A.unavailable){const t=A.retryAt?new Date(A.retryAt).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',timeZone:'Asia/Kolkata'})+' IST':'';return `<p class="note mut">${A.reason==='quota'?`Today’s free analysis limit has been used up, so the written analysis for this fund can’t be prepared right now${t?'. It can be prepared after '+t:''}.`:A.reason==='slow'?'The analysis is taking longer than usual. Reload the page in a few minutes to see it.':`The written analysis couldn’t be prepared just now${t?'. It will be tried again after '+t:''}.`} Holdings, returns and sector data below are live.</p>`}
  if(A.failed)return `<p class="note">Research could not finish: ${esc(A.failed)}. Holdings, returns and risk below are still live.</p>`;
  if(!A.holdings||!A.holdings.length){if(A.error)console.warn('fundDNA analysis:',A.error);return `<p class="note mut">The written analysis is unavailable right now. Holdings, returns and sector data on this page are live; the analysis will appear here once the research step is back.</p>`}
  return `<div class="ins">${A.holdings.map(h=>{const r=h.returns||{};return `<article class="hl"><div class="hh"><h3>${esc(nm(h.name))}</h3><p class="lbl">${h.weight!=null?h.weight.toFixed(1)+'% of fund':''}${h.sector?' · '+esc(h.sector):''}${r['3M']!=null?` · 3M <span class="${cl(r['3M'])}">${sg(r['3M'])}</span>`:''}</p></div>
@@ -182,7 +183,7 @@ function insideHTML(f){
  <div><p class="lbl">What we’re seeing</p>${claims(h.seeing,A,'Not enough sourced data to compare expectation with reality.')}</div>
  <div><p class="lbl">Why it matters to this fund</p><p>${esc(h.why_it_matters||'')}</p></div>
  <div><p class="lbl">What to watch</p>${claims(h.watch,A,'No sourced catalyst found.')}</div></div></article>`}).join('')}</div>
- <p class="cap">Every claim links to its source. Reasoning by ${esc(A.model||'Gemini')} from the cited material only${A.grounded?'':'; web search for consensus was unavailable on this run'}. Generated ${new Date(A.generatedAt).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}.</p>`;
+ <p class="cap">Every claim links to its source. Reasoning by ${esc(A.model||'Gemini')} from the cited material only${A.grounded?'':'; web search for consensus was unavailable on this run'}. Generated ${new Date(A.generatedAt).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}.${A.refreshing?' A fresh update is being prepared.':A.staleNote?' A newer update could not be prepared yet.':''}</p>`;
 }
 function perfHTML(f){
  const rows=f.holdings.filter(h=>h.type==='EQUITY'&&h.returns&&h.returns[pper]!=null).map(h=>({n:nm(h.name),w:h.weight,r:h.returns[pper],s:h.sector,c:h.weight*h.returns[pper]/100}));
@@ -247,9 +248,24 @@ async function load(code){
   catch(e){$('#app').innerHTML=`<div class="w"><section class="idn"><div><h1>Couldn’t load this fund</h1><p class="stamp">${esc(e.message)}. Holdings may not be published for this scheme (e.g. some debt, FoF or closed schemes).</p></div></section></div>`;return}}
  if(cur!==code)return;render();scrollTo(0,0);
  if(!D.analysis[code]){D.analysis[code]={loading:true};
-  (async()=>{let a=null;try{a=await getJ(`data/analysis/${code}.json`)}catch(e){}
-   if(!a){try{a=await getJ(`${API}/api/analysis?code=${code}`)}catch(e){a={failed:e.message}}}
-   D.analysis[code]=a;if(cur===code)render()})();}
+  getAnalysis(code);}
+}
+// Analysis: nightly prebuilt file first; otherwise ask the API, which runs the research in the
+// background and answers quickly. Short polls instead of one long request.
+async function getAnalysis(code){
+ const set=a=>{D.analysis[code]=a;if(cur===code)render()};
+ let pre=null;try{pre=await getJ(`data/analysis/${code}.json`)}catch(e){}
+ if(pre&&pre.holdings&&pre.holdings.length&&Date.now()-new Date(pre.generatedAt)<30*3600e3)return set(pre);
+ for(let i=0;i<14;i++){
+  let r=null;try{const c=new AbortController(),t=setTimeout(()=>c.abort(),25000);r=await getJ(`${API}/api/analysis?code=${code}${i?'&poll='+i:''}`,{signal:c.signal});clearTimeout(t)}catch(e){r=null}
+  if(cur!==code&&D.analysis[code]&&!D.analysis[code].loading)return;
+  if(r&&r.holdings&&r.holdings.length&&!r.pending&&!r.unavailable)return set(r);
+  if(r&&r.unavailable){const old=(r.holdings&&r.holdings.length)?r:(pre&&pre.holdings&&pre.holdings.length?pre:null);return set(old?{...old,staleNote:true}:{unavailable:true,reason:r.reason,retryAt:r.retryAt})}
+  const old=(r&&r.holdings&&r.holdings.length)?r:(pre&&pre.holdings&&pre.holdings.length?pre:null);
+  if(old){set({...old,refreshing:true})}else set({loading:true,checkBack:true});
+  await new Promise(z=>setTimeout(z,((r&&r.retryAfter)||20)*1000));
+ }
+ const cur0=D.analysis[code];if(cur0&&cur0.loading)set({unavailable:true,reason:'slow'});
 }
 const pick=id=>load(id);
 let qt;q.addEventListener('input',()=>{clearTimeout(qt);const t=q.value.trim();if(t.length<2){res.style.display='none';return}
