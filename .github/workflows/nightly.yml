@@ -1,14 +1,14 @@
-name: Nightly prebuild
+name: Daily prebuild
 on:
   schedule:
-    - cron: '30 1 * * *'   # 07:00 IST
+    - cron: '40 8 * * *'   # 14:10 IST, after the Gemini daily quota resets (midnight Pacific)
   workflow_dispatch: {}
 permissions:
   contents: write
 jobs:
   prebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,4 +25,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add data
           git diff --cached --quiet || git commit -m "Nightly data $(date -u +%F)"
+          git pull --rebase
           git push
