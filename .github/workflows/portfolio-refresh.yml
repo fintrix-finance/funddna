@@ -14,13 +14,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Preserve current dated baseline
+        run: node scripts/seed-portfolio-history.js
+      - name: Commit dated baseline
+        run: |
+          git config user.name "funddna-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/portfolio-history
+          git diff --cached --quiet || git commit -m "Preserve dated portfolio holdings baseline"
+          git pull --rebase
+          git push
       - name: Refresh candidate NAV and holdings
         run: node scripts/refresh-portfolio.js
       - name: Commit only a complete snapshot
         run: |
           git config user.name "funddna-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/portfolio-universe.json
+          git add data/portfolio-universe.json data/portfolio-history
           git diff --cached --quiet || git commit -m "Refresh portfolio screening data $(date -u +%F)"
           git pull --rebase
           git push
