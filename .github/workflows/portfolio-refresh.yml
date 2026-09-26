@@ -1,0 +1,26 @@
+name: Refresh portfolio screening data
+on:
+  schedule:
+    - cron: '15 9 * * 1' # Weekly Monday, 14:45 IST. No Gemini calls.
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Refresh candidate NAV and holdings
+        run: node scripts/refresh-portfolio.js
+      - name: Commit only a complete snapshot
+        run: |
+          git config user.name "funddna-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/portfolio-universe.json
+          git diff --cached --quiet || git commit -m "Refresh portfolio screening data $(date -u +%F)"
+          git pull --rebase
+          git push
