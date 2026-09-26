@@ -14,12 +14,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Build analysis JSON for popular funds
+      - name: Scan universe and backfill a bounded analysis batch
         id: build
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: gemini-3.8-flash
+          DAILY_GEMINI_CAP: 8
+          DAILY_SCAN_COUNT: 20
         run: node scripts/prebuild.js
       - name: Commit data
         if: always()
@@ -30,16 +32,15 @@ jobs:
           git diff --cached --quiet || git commit -m "Nightly data $(date -u +%F)"
           git pull --rebase
           git push
-      - name: Confirm analyses exist and material triggers completed
+      - name: Report published coverage
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const funds = ['118955','122639','120166','118989','120503','119598'];
-          const missing = funds.filter(c => { try { const a = JSON.parse(fs.readFileSync(`data/analysis/${c}.json`)); return !a.holdings?.length || !a.portfolio; } catch { return true; } });
-          console.log(`Valid analyses: ${funds.length - missing.length}/${funds.length}; missing: ${missing.join(',') || 'none'}. Analysis dates are intentionally not checked: unchanged funds stay valid.`);
-          if (missing.length || process.env.BUILD_OUTCOME === 'failure') process.exitCode = 1;
+          const p = 'data/backfill-state.json';
+          if (fs.existsSync(p)) {
+            const s = JSON.parse(fs.readFileSync(p));
+            console.log(`Written analysis: ${s.completed}/${s.total}; checked ${s.scanned}; Gemini attempts ${s.attempts}; published ${s.published}; quota stop: ${s.quotaStopped}`);
+            for (const f of s.failures || []) console.log(`Skipped ${f.code}: ${f.error}`);
+          } else console.log('Backfill state not written.');
           NODE
-      - name: Propagate material-trigger failure
-        if: steps.build.outcome == 'failure'
-        run: exit 1

@@ -1,56 +1,68 @@
-// Daily cheap signal scan; Gemini runs only for a missing analysis or a material change.
+// Bounded daily backfill and material-change scan. Completed analyses are never rewritten
+// just because a day passed. Missing funds are filled gradually, within the free-tier cap.
 const fs = require('fs'), path = require('path');
 const { buildFund } = require('../lib/fund'); const { buildAnalysis } = require('../lib/analysis');
 const { signals, compare } = require('../lib/triggers');
-const FUNDS = (process.env.FUNDS || '118955,122639,120166,118989,120503,119598').split(',').map(s => s.trim()).filter(Boolean);
-const GAP = +(process.env.PREBUILD_GAP_MS || 90000), MAX_RUN_MS = 43 * 60e3, started = Date.now();
+const root = path.join(__dirname, '..', 'data'), universe = JSON.parse(fs.readFileSync(path.join(root, 'portfolio-universe.json')));
+const featured = ['122639','118955','120166','118989','120503','119598'];
+const codes = [...new Set([...featured, ...universe.funds.map(f => String(f.code))])];
+const DAILY_CALLS = Math.min(12, Math.max(1, +(process.env.DAILY_GEMINI_CAP || 8)));
+const SCAN_COUNT = Math.min(40, Math.max(DAILY_CALLS, +(process.env.DAILY_SCAN_COUNT || 20)));
+const GAP = Math.max(60000, +(process.env.PREBUILD_GAP_MS || 90000));
+const MAX_RUN_MS = 43 * 60e3, started = Date.now();
+const file = c => path.join(root, 'analysis', `${c}.json`);
+const signalFile = c => path.join(root, 'signals', `${c}.json`);
+const stateFile = path.join(root, 'backfill-state.json');
+const read = p => { try { return JSON.parse(fs.readFileSync(p)); } catch { return null; } };
+const write = (p, x) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, JSON.stringify(x) + '\n'); };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const out = path.join(__dirname, '..', 'data');
-const file = code => path.join(out, 'analysis', `${code}.json`);
-const signalFile = code => path.join(out, 'signals', `${code}.json`);
-const read = f => { try { return JSON.parse(fs.readFileSync(f)); } catch { return null; } };
-const write = (f, x) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify(x)); };
-async function one(code) {
-  const prior = read(file(code)), baseline = read(signalFile(code));
-  const fund = await buildFund(code);
-  const snap = path.join(out, 'snapshots', String(code), `${fund.portfolioDate}.json`);
-  if (!fs.existsSync(snap)) write(snap, fund.holdings.map(h => ({ name: h.name, weight: h.weight, sector: h.sector, type: h.type })));
-  const current = await signals(fund, prior);
-  const reasons = process.env.FORCE ? ['manual FORCE'] : compare(current, baseline, prior);
-  if (!reasons.length) {
-    // Initialize legacy baselines without calling Gemini. Keep the last successful NAV
-    // as the reference for 5% moves; a skipped day must not reset it.
-    if (!baseline) write(signalFile(code), { ...current, nav: fund.nav, analysisGeneratedAt: prior.generatedAt });
-    console.log(code, 'unchanged; kept analysis from', prior.generatedAt);
-    return { ok: true, skipped: true };
-  }
-  console.log(code, 'material trigger:', reasons.join(' | '));
-  const a = await buildAnalysis(fund);
-  if (a.error || !a.holdings || !a.holdings.length || !a.portfolio) return { ok: false, error: String(a.error || 'incomplete analysis') };
-  write(file(code), a);
-  write(signalFile(code), { ...current, nav: fund.nav, analysisGeneratedAt: a.generatedAt });
-  console.log(code, fund.name, 'updated', a.holdings.length, 'holdings,', a.sources.length, 'sources');
-  return { ok: true, skipped: false };
-}
+const hasAnalysis = a => !!(a && a.holdings && a.holdings.length && a.portfolio);
+const isQuota = e => /\b429\b|quota|resource_exhausted|rate.limit/i.test(String(e));
 (async () => {
-  const retry = []; let calls = 0, updated = 0, skipped = 0, failed = new Map();
-  const run = async (list, label) => {
-    for (const code of list) {
-      if (Date.now() - started + (calls ? GAP : 0) > MAX_RUN_MS) { failed.set(code, 'run time budget'); continue; }
-      if (calls++) await sleep(GAP);
-      let r; try { r = await one(code); } catch (e) { r = { ok: false, error: e.message }; }
-      if (r.ok) { failed.delete(code); if (r.skipped) skipped++; else updated++; continue; }
-      console.log(code, label, 'failed:', r.error.slice(0, 220)); failed.set(code, r.error);
-      if (/503|429|timeout|abort/i.test(r.error)) retry.push(code);
+  const prev = read(stateFile) || {}, cursor = (+prev.cursor || 0) % codes.length;
+  // One full pass takes ceil(320 / SCAN_COUNT) days. Featured funds are checked first
+  // on the initial pass; the cursor never resets on failure or on a new calendar day.
+  let writes = 0, attempts = 0, checked = 0, failures = [], quota = false, lastCall = 0, cursorAdvance = 0;
+  const today = new Date().toISOString().slice(0,10);
+  const used = prev.day === today ? (+prev.dayAttempts || 0) : 0;
+  for (let i = 0; i < SCAN_COUNT; i++) {
+    if (Date.now() - started > MAX_RUN_MS - 120000) break;
+    const c = codes[(cursor + i) % codes.length], prior = read(file(c)), baseline = read(signalFile(c));
+    try {
+      const fund = await buildFund(c);
+      const current = hasAnalysis(prior) ? await signals(fund, prior) : null;
+      const reasons = current ? compare(current, baseline, prior) : ['missing analysis'];
+      if (!reasons.length) {
+        if (!baseline) write(signalFile(c), { ...current, analysisGeneratedAt: prior.generatedAt });
+        checked++; cursorAdvance++; continue;
+      }
+      if (attempts + used >= DAILY_CALLS) break;
+      if (lastCall) await sleep(Math.max(0, GAP - (Date.now() - lastCall)));
+      lastCall = Date.now(); attempts++;
+      console.log(c, reasons.join(' | '));
+      const a = await buildAnalysis(fund);
+      if (!hasAnalysis(a)) {
+        const err = String(a.error || 'incomplete analysis'); failures.push({ code:c, error:err.slice(0, 180) });
+        if (isQuota(err)) { quota = true; break; }
+        checked++; cursorAdvance++; continue;
+      }
+      // Successful research only: no partial overwrite and no baseline advance on failure.
+      write(file(c), a);
+      const snapshot = current || await signals(fund, a);
+      write(signalFile(c), { ...snapshot, nav: fund.nav, analysisGeneratedAt:a.generatedAt });
+      writes++; checked++; cursorAdvance++;
+      console.log(c, 'published', a.holdings.length, 'positions');
+    } catch (e) {
+      const err = String(e.message || e); failures.push({ code:c, error:err.slice(0,180) });
+      if (isQuota(err)) { quota = true; break; }
+      checked++; cursorAdvance++;
     }
-  };
-  await run(FUNDS, 'first');
-  for (let round = 1; round <= 2 && retry.length; round++) {
-    const remaining = retry.splice(0), pause = round * 180000;
-    if (Date.now() - started + pause + GAP > MAX_RUN_MS) break;
-    console.log('retry round', round, 'for', remaining.join(',')); await sleep(pause); await run(remaining, `retry ${round}`);
   }
-  const missing = FUNDS.filter(c => !read(file(c))?.holdings?.length);
-  console.log(`Analysis files: ${FUNDS.length - missing.length}/${FUNDS.length}; updated ${updated}, unchanged ${skipped}; missing: ${missing.join(',') || 'none'}; failed triggers: ${[...failed.keys()].join(',') || 'none'}`);
-  if (missing.length || failed.size) process.exitCode = 1;
+  const next = (cursor + cursorAdvance) % codes.length;
+  write(stateFile, { cursor:next, scanned:checked, attempts, day:today, dayAttempts:used+attempts, published:writes, quotaStopped:quota,
+    total:codes.length, completed:codes.filter(c=>hasAnalysis(read(file(c)))).length,
+    lastRun:new Date().toISOString(), failures:failures.slice(0,20) });
+  console.log('Coverage', codes.filter(c=>hasAnalysis(read(file(c)))).length + '/' + codes.length,
+    'attempts', attempts, 'new/updated', writes, 'scanned', checked, 'quota stopped', quota, 'failures', failures);
+  if (failures.length && !quota) process.exitCode = 1;
 })().catch(e => { console.error(e); process.exitCode = 1; });
