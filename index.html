@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="funddna-api" content="https://funddna.vercel.app">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>fundDNA — Research</title>
+<title>fundDNA | Fund research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 <style>
@@ -14,7 +14,7 @@ body{background:var(--paper);color:var(--ink);font:15px/1.55 var(--sans);font-va
 header{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--ink)}
 .hd{display:flex;align-items:center;gap:32px;height:52px}
 .logo{font:500 24px var(--serif);color:var(--ink);text-decoration:none;letter-spacing:-.02em}.logo b{font:600 22px var(--sans);letter-spacing:-.04em}
-nav{display:flex;gap:22px;font-size:14px}nav a{color:var(--mute);text-decoration:none}nav a:hover{color:var(--ink)}
+nav{display:flex;gap:18px;font-size:13px}nav a{color:var(--mute);text-decoration:none}nav a:hover,nav a[aria-current=page]{color:var(--ink);text-decoration:underline;text-underline-offset:5px}
 .srch{position:relative;flex:1;max-width:340px;margin-left:auto}
 .srch input{width:100%;font:inherit;font-size:14px;background:none;border:0;border-bottom:1px solid var(--ink);padding:6px 0;color:var(--ink);outline:0}
 .srch input:focus{border-bottom-width:2px}
@@ -83,16 +83,20 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(
 .srcs{white-space:normal}.src{font:italic 14px var(--serif);color:var(--mute);text-decoration:underline;text-decoration-color:var(--soft);text-underline-offset:3px;margin-left:8px}.src:hover{color:var(--ink)}
 .stamp a{color:var(--mute)}.pf3{display:grid;grid-template-columns:1fr;gap:30px}.pf3 h3{font:400 22px var(--serif);margin-bottom:8px}.pf3 table{min-width:0}.pf3 th:nth-child(4),.pf3 td:nth-child(4){text-align:right}
 table.lt th,table.lt td{text-align:left}.fig b.sm{font-size:clamp(24px,2.9vw,38px);white-space:nowrap}
-@media(max-width:860px){.hq{grid-template-columns:1fr}.hl h3{font-size:24px}.w{padding:0 20px}nav,.rt span:first-child{display:none}.hd{gap:14px}.idn,.sec,.fpw,.two,.fin{grid-template-columns:1fr;gap:26px}.sec{padding:32px 0 40px}
+@media(max-width:860px){.hq{grid-template-columns:1fr}.hl h3{font-size:24px}.w{padding:0 20px}.hd{gap:12px;min-height:52px;height:auto;flex-wrap:wrap;padding-top:9px;padding-bottom:8px}nav{order:3;width:100%;overflow-x:auto;white-space:nowrap;padding-bottom:5px;gap:19px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}.rt{display:none}.srch{max-width:none;min-width:100px}.idn,.sec,.fpw,.two,.fin{grid-template-columns:1fr;gap:26px}.sec{padding:32px 0 40px}
 .chg3,.brk{grid-template-columns:1fr;gap:22px}.rk,.mg{grid-template-columns:repeat(2,1fr)}.fp text{display:none}
 .tm{height:auto}.tr{flex-wrap:wrap;flex:none!important}.tr:first-child{height:180px}.tr+.tr .blk{flex:1 1 calc(33.33% - 2px)!important;height:104px}.blk{padding:9px 10px}.blk b{font-size:24px}
 .sg b{font-size:26px}.sg span{font-size:11px}.mc b{font-size:24px}
 table{font-size:13px}th,td{padding-left:8px;padding-right:8px}th:first-child,td:first-child{position:sticky;left:0;background:var(--paper);z-index:1;box-shadow:1px 0 0 var(--soft)}tbody tr:hover td:first-child{background:#E4DFD0}.tw{margin-right:-20px;padding-right:20px}}
 @media(prefers-reduced-motion:reduce){.fp g.b path{animation:none;stroke-dashoffset:0}*{transition:none!important}}
+.view-panel[hidden]{display:none!important}
+.cover{padding:62px 0 82px}.cover h1{max-width:11em}.cover .lead{font:400 clamp(19px,2.5vw,27px)/1.27 var(--serif);color:var(--mute);margin:18px 0 46px;max-width:31em}.cover h2{font:500 13px var(--sans);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}.cover-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:50px}.cover-card{display:block;color:var(--ink);text-decoration:none;min-height:190px;padding:22px;border:1px solid var(--ink);transition:background .15s}.cover-card:hover,.fund-link:hover{background:var(--acid)}.cover-card b{display:block;font:400 33px/1.05 var(--serif)}.cover-card span{display:block;font-size:13px;color:var(--mute);margin-top:17px}.cover-card small{font-size:11px;letter-spacing:.1em}.cover-card i{display:block;font:400 22px var(--serif);margin-top:24px}.category{border-top:2px solid var(--ink);padding:26px 0}.category h3{font:400 29px var(--serif);margin-bottom:12px}.fund-link{display:flex;align-items:center;justify-content:space-between;color:var(--ink);text-decoration:none;padding:12px;border-top:1px solid var(--soft);gap:12px}.fund-link span:last-child{color:var(--mute)}.section-switch{display:flex;gap:8px;overflow-x:auto;white-space:nowrap;border-top:1px solid var(--ink);padding:14px 0}.section-switch a{color:var(--mute);text-decoration:none;border:1px solid var(--soft);padding:5px 12px;font-size:13px}.section-switch a[aria-current=page]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+@media(max-width:860px){.cover{padding:35px 0 60px}.cover-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cover-card{min-height:155px;padding:15px}.cover-card b{font-size:25px}.cover-card i{font-size:18px}}
+@media(max-width:480px){.cover-grid{grid-template-columns:1fr 1fr}.cover-card{min-height:142px}.cover-card b{font-size:23px}}
 </style></head><body>
 <header><div class="w hd">
-<a class="logo" href="#top">fund<b>DNA</b></a>
-<nav><a href="#top">Research</a><a href="#ctx">Compare</a><a href="#top" title="Not in this build">Watchlist</a></nav>
+<a class="logo" href="#home">fund<b>DNA</b></a>
+<nav id="nav"><a href="#home" data-route="home">Home</a><a href="#research" data-route="research">Research</a><a href="#dna" data-route="dna">DNA</a><a href="#performance" data-route="performance">Performance</a><a href="#holdings" data-route="holdings">Holdings</a><a href="#risk" data-route="risk">Risk</a><a href="#compare" data-route="compare">Compare</a></nav>
 <div class="srch"><input id="q" placeholder="Search funds" autocomplete="off" aria-label="Search funds"><ul id="res"></ul></div>
 <div class="rt"><span id="mk"></span><span class="av" title="Profile">MR</span></div></div></header>
 <main id="app"></main>
@@ -123,7 +127,14 @@ function toUI(x){
 async function getJ(u,o){const r=await fetch(u,o);const j=await r.json().catch(()=>({error:'Bad response'}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
 /* ===== RENDERING ===== */
 const $=s=>document.querySelector(s);let ids=[];
-let cur=null,peer=null,per=5,pper='3M';
+let cur=null,peer=null,per=5,pper='3M',view='research',renderSeq=0;
+const categories=[['Flexi Cap',[['118955','HDFC Flexi Cap Fund'],['122639','Parag Parikh Flexi Cap Fund'],['120166','Kotak Flexi Cap Fund']]],['Mid Cap',[['118989','HDFC Mid Cap Fund']]],['Large Cap',[['119598','SBI Large Cap Fund']]],['ELSS',[['120503','Axis ELSS - Tax Saver Fund']]]];
+const views=[['research','Research','Company filings, news and portfolio reading'],['dna','The DNA','A fund’s eight measured traits'],['performance','Performance','Returns and contributors'],['holdings','Holdings','Sector and stock positions'],['risk','Risk','Drawdown, volatility and thesis checks'],['compare','Compare','Fund and index, side by side']];
+function cover(section){cur=null;document.title='fundDNA | Explore funds';$('#app').innerHTML=`<div class="w cover"><p class="lbl">FUND RESEARCH / COVER</p><h1>Find the fund. Read only what matters.</h1><p class="lead">Choose a section, then a fund. Research updates when a material change is detected; market data and NAV can change sooner.</p><h2>Browse by section</h2><div class="cover-grid">${views.map(([v,n,d],i)=>`<a class="cover-card" href="#${v}" data-route="${v}"><small>0${i+1} / SECTION</small><b>${n}</b><span>${d}</span><i>Explore ↗</i></a>`).join('')}</div><h2>${section?"Choose a fund for "+views.find(x=>x[0]===section)[1]:"Browse by fund category"}</h2>${categories.map(([cat,fs])=>`<div class="category"><h3>${cat}</h3>${fs.map(([c,n])=>`<a class="fund-link" href="#${section||'research'}/${c}" data-fund="${c}" data-view="${section||'research'}"><span>${n}</span><span>${section?views.find(x=>x[0]===section)[1]:'Research'} ↗</span></a>`).join('')}</div>`).join('')}<p class="cap">Categories reflect the fund provider’s published classification. ELSS is the tax-saving equity category.</p></div>`;updateNav();scrollTo(0,0)}
+function updateNav(){document.querySelectorAll('#nav [data-route],.section-switch [data-route]').forEach(a=>{if(a.dataset.route===(cur?view:'home'))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})}
+function showView(v){if(!views.some(x=>x[0]===v))v='research';view=v;document.querySelectorAll('.view-panel').forEach(e=>e.hidden=e.dataset.view!==view);updateNav();if(cur)document.title=D.funds[cur].name+' | '+views.find(x=>x[0]===view)[1]+' | fundDNA'}
+function route(){const p=decodeURIComponent(location.hash.slice(1)).split('/');if(/^\d+$/.test(p[0]))return load(p[0],'research',false);if(!p[0]||p[0]==='home')return cover();if(!views.some(x=>x[0]===p[0]))return cover();if(p[1]&&/^\d+$/.test(p[1]))return load(p[1],p[0],false);if(cur&&D.funds[cur]){view=p[0];render();scrollTo(0,0)}else cover(p[0])}
+
 const inr=n=>n==null?'—':n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=(n,d=1)=>n==null||isNaN(n)?'—':(n>0?'+':n<0?'−':'')+Math.abs(n).toFixed(d)+'%';
 const cl=n=>n>0?'pos':n<0?'neg':'';
@@ -166,7 +177,7 @@ function cmpHTML(){
  const others=ids.filter(i=>i!==cur);
  return `<div class="tw"><table class="cmp"><thead><tr><th></th><th>${f.name}</th><th>${f.benchName}</th><th>${others.length?`<select id="peer" aria-label="Peer fund">${others.map(i=>`<option value="${i}" ${i===peer?'selected':''}>${D.funds[i].name}</option>`).join('')}</select>`:'<span class="mut" style="font-weight:400">Search another fund to compare</span>'}</th></tr></thead><tbody>${c.map(([l,k,u])=>`<tr><td>${l}</td><td>${v(f.stats,k,u)}</td><td>${v(f.benchStats,k,u)}</td><td>${v(p&&p.stats,k,u)}</td></tr>`).join('')}</tbody></table></div>`;
 }
-const sec=(t,sub,body,id='')=>`<div class="w"><section class="sec" ${id?`id="${id}"`:''}><div><h2>${t}</h2><p class="sub">${sub}</p></div><div>${body}</div></section></div>`;
+const sec=(t,sub,body,id='',v='research')=>`<div class="w view-panel" data-view="${v}"><section class="sec" ${id?`id="${id}"`:''}><div><h2>${t}</h2><p class="sub">${sub}</p></div><div>${body}</div></section></div>`;
 const nm=t=>String(t||'').replace(/\s+(Ltd|Limited)\.?$/i,'');
 const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function srcLinks(ids,A){const m={};(A.sources||[]).forEach(x=>m[x.id]=x);return ids.map(i=>m[i]).filter(Boolean).map(x=>`<a class="src" href="${esc(x.url)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.publisher||'Source')}${x.date?', '+new Date(x.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}</a>`).join('')}
@@ -178,12 +189,12 @@ function insideHTML(f){
  if(A.failed)return `<p class="note">Research could not finish: ${esc(A.failed)}. Holdings, returns and risk below are still live.</p>`;
  if(!A.holdings||!A.holdings.length){if(A.error)console.warn('fundDNA analysis:',A.error);return `<p class="note mut">The written analysis is unavailable right now. Holdings, returns and sector data on this page are live; the analysis will appear here once the research step is back.</p>`}
  return `<div class="ins">${A.holdings.map(h=>{const r=h.returns||{};return `<article class="hl"><div class="hh"><h3>${esc(nm(h.name))}</h3><p class="lbl">${h.weight!=null?h.weight.toFixed(1)+'% of fund':''}${h.sector?' · '+esc(h.sector):''}${r['3M']!=null?` · 3M <span class="${cl(r['3M'])}">${sg(r['3M'])}</span>`:''}</p></div>
- <div class="hq"><div><p class="lbl">What changed</p>${claims(h.what_changed,A,'No sourced development found in the last 30 days.')}</div>
+ <div class="hq"><div><p class="lbl">What changed</p>${claims(h.what_changed,A,'No sourced development was found in this analysis.')}</div>
  <div><p class="lbl">What the market expected</p>${claims(h.expected,A,'No reliable consensus source found.')}</div>
  <div><p class="lbl">What we’re seeing</p>${claims(h.seeing,A,'Not enough sourced data to compare expectation with reality.')}</div>
  <div><p class="lbl">Why it matters to this fund</p><p>${esc(h.why_it_matters||'')}</p></div>
  <div><p class="lbl">What to watch</p>${claims(h.watch,A,'No sourced catalyst found.')}</div></div></article>`}).join('')}</div>
- <p class="cap">Every claim links to its source. Reasoning by ${esc(A.model||'Gemini')} from the cited material only${A.grounded?'':'; web search for consensus was unavailable on this run'}. Generated ${new Date(A.generatedAt).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}.${A.refreshing?' A fresh update is being prepared.':A.staleNote?' A newer update could not be prepared yet.':''}</p>`;
+ <p class="cap">Research changes only after a material signal; check the generated date against new events. Every claim links to its source. Reasoning by ${esc(A.model||'Gemini')} from the cited material only${A.grounded?'':'; web search for consensus was unavailable on this run'}. Generated ${new Date(A.generatedAt).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}.${A.refreshing?' A fresh update is being prepared.':A.staleNote?' A newer update could not be prepared yet.':''}</p>`;
 }
 function perfHTML(f){
  const rows=f.holdings.filter(h=>h.type==='EQUITY'&&h.returns&&h.returns[pper]!=null).map(h=>({n:nm(h.name),w:h.weight,r:h.returns[pper],s:h.sector,c:h.weight*h.returns[pper]/100}));
@@ -202,31 +213,32 @@ function wholeHTML(){
  <p class="lbl" style="margin-top:30px">Macro factors that matter to these holdings</p><div class="tw"><table class="bk lt"><thead><tr><th>FACTOR</th><th>WHY IT MATTERS HERE</th><th>HOLDINGS EXPOSED</th></tr></thead><tbody>${(P.macro||[]).map(m=>`<tr><td>${esc(m.factor)}</td><td style="text-align:left">${esc(m.why)}</td><td style="text-align:left">${L(m.holdings)}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function render(){
- const f=D.funds[cur];if(!f)return;
+ const f=D.funds[cur];if(!f)return;renderSeq++;
  if(peer===cur||!D.funds[peer])peer=ids.find(i=>i!==cur)||null;
  const st=f.stats,bk=f.book,A=D.analysis[cur]||{},P=A.portfolio||{};
  const wait=A.loading||!D.analysis[cur]?'<span class="mut">Researching…</span>':'<span class="mut">Not available for this run.</span>';
  const risks=(P.could_change||[]).slice(0,3);
  const S=f.sources||{},dt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
  $('#app').innerHTML=`
- <div class="w"><section id="top" class="idn"><div><h1>${esc(f.name)}</h1><p class="plan">${esc(f.plan)}</p><p class="stamp">NAV ${esc(f.navDate)} · Holdings as of ${dt(f.portfolioDate)} · <a href="${esc(S.holdings&&S.holdings.url)}" target="_blank" rel="noopener">Holdings source</a> · <a href="${esc(S.disclosure&&S.disclosure.url)}" target="_blank" rel="noopener">AMC disclosures</a></p></div>
+ <div class="w"><div class="section-switch" aria-label="Fund sections"><a href="#home" data-route="home">← All funds</a>${views.map(([v,n])=>`<a href="#${v}/${cur}" data-route="${v}">${n}</a>`).join('')}</div><section id="top" class="idn"><div><h1>${esc(f.name)}</h1><p class="plan">${esc(f.plan)}</p><p class="stamp">NAV ${esc(f.navDate)} · Holdings as of ${dt(f.portfolioDate)} · <a href="${esc(S.holdings&&S.holdings.url)}" target="_blank" rel="noopener">Holdings source</a> · <a href="${esc(S.disclosure&&S.disclosure.url)}" target="_blank" rel="noopener">AMC disclosures</a></p></div>
  <div class="fig"><div><b>₹${inr(f.nav)}</b><span>NAV</span></div><div><b class="${cl(st.r1)}">${sg(st.r1,2)}</b><span>1Y</span></div><div><b class="${f.aum>=100000?'sm':''}">${f.aum!=null?'₹'+f.aum.toLocaleString('en-IN')+' Cr':'—'}</b><span>AUM</span></div><div><b>${st.er!=null?st.er.toFixed(2)+'%':'—'}</b><span>EXPENSE RATIO</span></div></div></section></div>
- ${sec('What’s happening inside the fund?','The largest holdings, what changed, and why it matters here',insideHTML(f),'inside')}
- ${sec('Which stocks are working?','Performers, contributors and drags',`<div id="perf">${perfHTML(f)}</div>`)}
+ ${sec('What’s happening inside the fund?','The largest holdings, sourced developments, and why they matter here',insideHTML(f),'inside')}
+ ${sec('Which stocks are working?','Performers, contributors and drags',`<div id="perf">${perfHTML(f)}</div>`,'','performance')}
  ${sec('What does the portfolio mean?','Reading the book as a whole',wholeHTML())}
- <div class="dark"><div class="w"><section class="sec"><div><h2>The DNA</h2><p class="sub">Eight measured traits, computed from holdings and NAV history. Each fund produces its own.</p></div>
+ <div class="dark view-panel" data-view="dna"><div class="w"><section class="sec"><div><h2>The DNA</h2><p class="sub">Eight measured traits, computed from holdings and NAV history. Each fund produces its own.</p></div>
  <div class="fpw"><div>${fpSVG(f)}<div id="fpr" class="mut">Hover or tap a band to read the trait.</div></div>
  <div class="pf"><h3>DNA profile</h3><ul class="pf">${f.profile.map(([l,n])=>`<li>${esc(l)}<i>${[1,2,3,4,5].map(k=>`<s class="${k<=n?'f':''}"></s>`).join('')}</i></li>`).join('')}</ul></div></div></section></div></div>
  ${sec('What is this fund really?','The analyst’s read',`<p class="big">${P.statement?esc(P.statement):wait}</p><div class="two"><div><p class="lbl">FundDNA interpretation</p><p>${P.interp?esc(P.interp[0]):''}</p></div><p style="align-self:end">${P.interp?esc(P.interp[1]||''):''}</p></div>`)}
- ${sec('Performance','Fund against its index',`<div class="pb" role="group" aria-label="Period">${[1,3,5].map(y=>`<button data-y="${y}" aria-pressed="${y===per}">${y}Y</button>`).join('')}</div><div id="chart">${chartHTML()}</div><div class="leg"><span><i style="border-color:#14130E"></i>Fund (NAV)</span><span><i style="border-color:#77746A"></i>${esc(f.benchName)}</span><span>Rebased to 0 at period start · quarter-end points</span></div>`)}
- ${sec('Where the money is','Sector exposure, sized by weight',`${mapHTML(f)}${f.mcap?`<p class="lbl" style="margin-top:30px">Market cap (approx., largest holdings)</p><div class="mc">${['Large','Mid','Small'].map((n,i)=>`<div style="flex:${Math.max(f.mcap[i],4)}"><b>${f.mcap[i]}%</b><span>${n}</span></div>`).join('')}</div>`:''}`)}
- ${sec('The book','Largest positions and recent moves',`<div class="tw"><table class="bk"><thead><tr><th>COMPANY</th><th>WEIGHT</th><th>SECTOR</th><th>1M</th><th>3M</th></tr></thead><tbody>${bk.map(r=>`<tr><td>${esc(nm(r[0]))}</td><td>${r[1].toFixed(1)}%</td><td>${esc(r[2])}</td><td class="${cl(r[3])}">${sg(r[3])}</td><td class="${cl(r[4])}">${sg(r[4])}</td></tr>`).join('')}</tbody></table></div><p class="cap">Month-on-month position changes appear once two monthly disclosures have been captured.</p>`)}
- ${sec('Where it can hurt','Risk in the numbers',`<div class="rk"><div><b>${st.vol!=null?st.vol.toFixed(1)+'%':'—'}</b><span>Volatility (3Y)</span></div><div><b>${st.beta!=null?st.beta.toFixed(2):'—'}</b><span>Beta vs index</span></div><div><b class="neg">${sg(st.dd)}</b><span>Maximum drawdown (3Y)</span></div><div><b>${st.sharpe!=null?st.sharpe.toFixed(2):'—'}</b><span>Sharpe (rf 6.5%)</span></div></div><p class="note">${P.risk_note?esc(P.risk_note):wait}</p>${ddHTML(f)}<p class="cap">Drawdown from prior peak, quarter-end NAV observations.</p>`)}
- ${sec('What could break the thesis?','Three things to watch',risks.length?`<div class="brk">${risks.map((r,i)=>`<div><b>0${i+1}</b><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p></div>`).join('')}</div>`:`<p class="note">${wait}</p>`)}
- ${sec('Who is running the money?','',`<dl class="mg"><div><dt>Manager${f.mgr.name.includes(',')?'s':''}</dt><dd>${esc(f.mgr.name)}</dd></div><div><dt>On this fund</dt><dd>${f.mgr.tenure}</dd></div><div><dt>Holdings</dt><dd>${f.mgr.count}</dd></div><div><dt>Portfolio turnover</dt><dd>${f.mgr.turn}</dd></div></dl>`)}
- ${sec('Put it in context','Same measures, side by side',`<div id="cmp">${cmpHTML()}</div>`,'ctx')}
- <div class="w"><section class="fin"><div><h2>The fund, in one line</h2><p class="big">${P.line?esc(P.line):wait}</p><p class="pl"><span>DNA profile</span>${f.profile.slice(0,4).map(p=>esc(p[0])).join(' · ')}</p></div>
+ ${sec('Performance','Fund against its index',`<div class="pb" role="group" aria-label="Period">${[1,3,5].map(y=>`<button data-y="${y}" aria-pressed="${y===per}">${y}Y</button>`).join('')}</div><div id="chart">${chartHTML()}</div><div class="leg"><span><i style="border-color:#14130E"></i>Fund (NAV)</span><span><i style="border-color:#77746A"></i>${esc(f.benchName)}</span><span>Rebased to 0 at period start · quarter-end points</span></div>`,'','performance')}
+ ${sec('Where the money is','Sector exposure, sized by weight',`${mapHTML(f)}${f.mcap?`<p class="lbl" style="margin-top:30px">Market cap (approx., largest holdings)</p><div class="mc">${['Large','Mid','Small'].map((n,i)=>`<div style="flex:${Math.max(f.mcap[i],4)}"><b>${f.mcap[i]}%</b><span>${n}</span></div>`).join('')}</div>`:''}`,'','holdings')}
+ ${sec('The book','Largest positions and recent moves',`<div class="tw"><table class="bk"><thead><tr><th>COMPANY</th><th>WEIGHT</th><th>SECTOR</th><th>1M</th><th>3M</th></tr></thead><tbody>${bk.map(r=>`<tr><td>${esc(nm(r[0]))}</td><td>${r[1].toFixed(1)}%</td><td>${esc(r[2])}</td><td class="${cl(r[3])}">${sg(r[3])}</td><td class="${cl(r[4])}">${sg(r[4])}</td></tr>`).join('')}</tbody></table></div><p class="cap">Month-on-month position changes appear once two monthly disclosures have been captured.</p>`,'','holdings')}
+ ${sec('Where it can hurt','Risk in the numbers',`<div class="rk"><div><b>${st.vol!=null?st.vol.toFixed(1)+'%':'—'}</b><span>Volatility (3Y)</span></div><div><b>${st.beta!=null?st.beta.toFixed(2):'—'}</b><span>Beta vs index</span></div><div><b class="neg">${sg(st.dd)}</b><span>Maximum drawdown (3Y)</span></div><div><b>${st.sharpe!=null?st.sharpe.toFixed(2):'—'}</b><span>Sharpe (rf 6.5%)</span></div></div><p class="note">${P.risk_note?esc(P.risk_note):wait}</p>${ddHTML(f)}<p class="cap">Drawdown from prior peak, quarter-end NAV observations.</p>`,'','risk')}
+ ${sec('What could break the thesis?','Three things to watch',risks.length?`<div class="brk">${risks.map((r,i)=>`<div><b>0${i+1}</b><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p></div>`).join('')}</div>`:`<p class="note">${wait}</p>`,'','risk')}
+ ${sec('Who is running the money?','',`<dl class="mg"><div><dt>Manager${f.mgr.name.includes(',')?'s':''}</dt><dd>${esc(f.mgr.name)}</dd></div><div><dt>On this fund</dt><dd>${f.mgr.tenure}</dd></div><div><dt>Holdings</dt><dd>${f.mgr.count}</dd></div><div><dt>Portfolio turnover</dt><dd>${f.mgr.turn}</dd></div></dl>`,'','holdings')}
+ ${sec('Put it in context','Same measures, side by side',`<div id="cmp">${cmpHTML()}</div>`,'ctx','compare')}
+ <div class="w view-panel" data-view="dna"><section class="fin"><div><h2>The fund, in one line</h2><p class="big">${P.line?esc(P.line):wait}</p><p class="pl"><span>DNA profile</span>${f.profile.slice(0,4).map(p=>esc(p[0])).join(' · ')}</p></div>
  <svg class="fp" viewBox="0 0 600 300" aria-hidden="true">${fpBands(f.dna.map(v=>v/100),600,300,24,6).map(p=>`<g class="b">${p}</g>`).join('')}</svg></section><footer>Data: AMFI, AMC monthly disclosures (via Groww), NSE/BSE filings and prices, Screener.in, reputable financial press. Analysis by Gemini from cited sources only. Not investment advice.</footer></div>`;
+ showView(view);
 }
 /* ===== INTERACTION ===== */
 const app=$('#app');
@@ -241,8 +253,8 @@ app.addEventListener('click',e=>{const b=e.target.closest('.pb button');if(!b)re
  per=+b.dataset.y;$('#chart').innerHTML=chartHTML();b.parentNode.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
 app.addEventListener('change',e=>{if(e.target.id==='peer'){peer=e.target.value;$('#cmp').innerHTML=cmpHTML()}});
 const q=$('#q'),res=$('#res');
-async function load(code){
- code=String(code);cur=code;q.value='';res.style.display='none';location.hash=code;
+async function load(code,v='research',push=true){
+ code=String(code);if(cur===code&&D.funds[code]){view=v;if(push)location.hash=v+'/'+code;render();scrollTo(0,0);return}cur=code;view=v;q.value='';res.style.display='none';if(push)location.hash=v+'/'+code;
  if(!D.funds[code]){$('#app').innerHTML=`<div class="w"><section class="idn"><div><h1 class="mut">Loading fund…</h1><p class="stamp">Fetching holdings, NAV history and prices.</p></div></section></div>`;
   try{const x=await getJ(`${API}/api/fund?code=${code}`);D.funds[code]=toUI(x);D.asOfDate=new Date(x.seriesEnd||Date.now());if(!ids.includes(code))ids.push(code);try{localStorage.setItem('fd_recent',JSON.stringify(ids.slice(-6)))}catch(e){}}
   catch(e){$('#app').innerHTML=`<div class="w"><section class="idn"><div><h1>Couldn’t load this fund</h1><p class="stamp">${esc(e.message)}. Holdings may not be published for this scheme (e.g. some debt, FoF or closed schemes).</p></div></section></div>`;return}}
@@ -255,7 +267,7 @@ async function load(code){
 async function getAnalysis(code){
  const set=a=>{D.analysis[code]=a;if(cur===code)render()};
  let pre=null;try{pre=await getJ(`data/analysis/${code}.json`)}catch(e){}
- if(pre&&pre.holdings&&pre.holdings.length&&Date.now()-new Date(pre.generatedAt)<30*3600e3)return set(pre);
+ if(pre&&pre.holdings&&pre.holdings.length)return set(pre);
  for(let i=0;i<14;i++){
   let r=null;try{const c=new AbortController(),t=setTimeout(()=>c.abort(),25000);r=await getJ(`${API}/api/analysis?code=${code}${i?'&poll='+i:''}`,{signal:c.signal});clearTimeout(t)}catch(e){r=null}
   if(cur!==code&&D.analysis[code]&&!D.analysis[code].loading)return;
@@ -267,7 +279,7 @@ async function getAnalysis(code){
  }
  const cur0=D.analysis[code];if(cur0&&cur0.loading)set({unavailable:true,reason:'slow'});
 }
-const pick=id=>load(id);
+const pick=id=>load(id,cur?view:(views.some(x=>x[0]===location.hash.slice(1))?location.hash.slice(1):'research'));
 let qt;q.addEventListener('input',()=>{clearTimeout(qt);const t=q.value.trim();if(t.length<2){res.style.display='none';return}
  qt=setTimeout(async()=>{try{const r=await getJ(`${API}/api/search?q=${encodeURIComponent(t)}`);if(q.value.trim()!==t)return;
  res.innerHTML=r.results.map(x=>`<li data-id="${x.code}">${esc(x.name)}<span class="mut" style="display:block;font-size:12px">${esc(x.amc)} · ${esc(x.category)}</span></li>`).join('')||'<li>No fund matches</li>'}catch(e){res.innerHTML=`<li>Search unavailable</li>`}res.style.display='block'},220)});
@@ -276,5 +288,5 @@ res.addEventListener('click',e=>{const l=e.target.closest('li[data-id]');if(l)pi
 document.addEventListener('click',e=>{if(!e.target.closest('.srch'))res.style.display='none'});
 (()=>{const i=new Date(Date.now()+(new Date().getTimezoneOffset()+330)*6e4),m=i.getHours()*60+i.getMinutes(),o=i.getDay()%6&&m>=555&&m<930;$('#mk').innerHTML=`<i class="dot ${o?'o':''}"></i>NSE ${o?'open':'closed'}`})();
 addEventListener('resize',()=>{const c=$('#chart');if(c&&D.funds[cur])c.innerHTML=chartHTML()});
-load((location.hash.slice(1).match(/^\d+$/)||[])[0]||'118955');
+addEventListener('hashchange',route);route();
 </script></body></html>
