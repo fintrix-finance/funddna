@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head>< meta charset="utf-8">
+<html lang="en"><head><meta charset="utf-8">
 <meta name="funddna-api" content="https://funddna.vercel.app">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>fundDNA | Fund research</title>
@@ -139,7 +139,7 @@ function toUI(x){
  const profile=[[`${topSec[0]}-heavy`,lv(topSec[1]*2)],[large==null?'Market-cap mix unknown':large>=60?'Large-cap tilted':large>=35?'Multi-cap mix':'Mid/small-cap tilted',large==null?1:lv(large)],[(x.top10>=50?'High':x.top10>=35?'Moderate':'Low')+' concentration',lv(dna[4])],[tv==null?'Turnover n/a':(tv===1?'Low':tv===3?'Moderate':'High')+' turnover',tv??1],[(st.vol>=16?'High':st.vol>=11?'Medium':'Low')+' volatility',st.vol>=16?5:st.vol>=11?3:2],[(st.r3??0)>=(bs.r3??0)?'Ahead of index (3Y)':'Behind index (3Y)',(st.r3??0)>=(bs.r3??0)?4:2]];
  const mg=x.managers||[],since=mg.map(m=>m.since).filter(Boolean).sort()[0];
  const yrs=since?((Date.now()-new Date(since))/3.156e10).toFixed(1)+' years':'—';
- return {code:x.code,name:x.name,plan:x.plan,nav:x.nav,aum:x.aum,navDate:x.navDate,portfolioDate:x.portfolioDate,sources:x.sources,coverage:x.coverage,
+ return {code:x.code,name:x.name,category:x.category,holdingsCount:x.holdingsCount,er:x.er,plan:x.plan,nav:x.nav,aum:x.aum,navDate:x.navDate,portfolioDate:x.portfolioDate,sources:x.sources,coverage:x.coverage,
   stats:{r1:st.r1,r3:st.r3,vol:st.vol,beta:st.beta,sharpe:st.sharpe,dd:st.dd,er:x.er,top10:x.top10,large},
   benchStats:{r1:bs.r1,r3:bs.r3,vol:bs.vol,beta:1,sharpe:bs.r3!=null&&bs.vol?(bs.r3-6.5)/bs.vol:null,dd:bs.dd,er:null,top10:null,large:null},benchName:b.name||'Index',benchUrl:b.url,
   series:x.series,benchSeries:b.series||[],notes:[],dna,profile,sectors:x.sectors.map(s=>[s[0],s[1],null]),mcap:x.mcap,
