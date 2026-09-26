@@ -5,7 +5,7 @@ const { buildFund } = require('../lib/fund'); const { buildAnalysis } = require(
 const store = require('../lib/store'); const { send, wrap } = require('./_util');
 let waitUntil = p => p; try { ({ waitUntil } = require('@vercel/functions')); } catch {}
 const SITE = process.env.SITE_URL || 'https://funddna.github.io';
-const H = 3600 * 1000, FRESH = 30 * H, JOB_TTL = 6 * 60 * 1000;
+const H = 3600 * 1000, JOB_TTL = 6 * 60 * 1000;
 const age = a => a && a.generatedAt ? Date.now() - new Date(a.generatedAt).getTime() : Infinity;
 
 function nextPacificMidnight() { // Gemini daily quotas reset at midnight Pacific time
@@ -38,8 +38,8 @@ async function job(code) {
 
 module.exports = wrap(async (req, res) => {
   const code = new URL(req.url, 'http://x').searchParams.get('code'); if (!/^\d+$/.test(code || '')) return send(req, res, 400, { error: 'code required' });
-  const pre = await prebuilt(code); if (pre && age(pre) < FRESH) return send(req, res, 200, pre, 1800);
-  const saved = await store.read(`analysis/${code}.json`); if (saved && age(saved) < FRESH) return send(req, res, 200, saved, 1800);
+  const pre = await prebuilt(code); if (pre && pre.holdings?.length) return send(req, res, 200, pre, 1800);
+  const saved = await store.read(`analysis/${code}.json`); if (saved && saved.holdings?.length) return send(req, res, 200, saved, 1800);
   const stale = [pre, saved].filter(Boolean).sort((x, y) => age(x) - age(y))[0] || null;
   const quota = await store.read('status/_quota.json');
   if (quota && new Date(quota.until) > new Date()) return send(req, res, 200, { ...(stale || {}), code: +code, unavailable: true, reason: 'quota', retryAt: quota.until });
