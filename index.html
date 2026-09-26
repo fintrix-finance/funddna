@@ -292,7 +292,7 @@ function render(){
  const f=D.funds[cur];if(!f)return;renderSeq++;
  if(peer===cur||!D.funds[peer])peer=ids.find(i=>i!==cur)||null;
  const st=f.stats,bk=f.book,A=D.analysis[cur]||{},P=A.portfolio||{};
- const wait=A.loading||!D.analysis[cur]?'<span class="mut">Researching…</span>':'<span class="mut">Not available for this run.</span>';
+ const hasAnalysis=!!(A.holdings&&A.holdings.length),hasPortfolio=!!A.portfolio;
  const risks=(P.could_change||[]).slice(0,3);
  const S=f.sources||{},dt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
  $('#app').innerHTML=`
@@ -300,22 +300,22 @@ function render(){
  <div class="fig"><div><b>₹${inr(f.nav)}</b><span>NAV</span></div><div><b class="${cl(st.r1)}">${sg(st.r1,2)}</b><span>1Y</span></div><div><b class="${f.aum>=100000?'sm':''}">${f.aum!=null?'₹'+f.aum.toLocaleString('en-IN')+' Cr':'—'}</b><span>AUM</span></div><div><b>${st.er!=null?st.er.toFixed(2)+'%':'—'}</b><span>EXPENSE RATIO</span></div></div></section></div>
  ${sec('Research brief','What this fund owns, directly from disclosed data',factualResearch(f),'facts')}
  ${sec('Exposure and fit','Where the assets are concentrated; category is not a suitability judgment',factualExposure(f),'exposure')}
- ${sec('Deep-dive analysis','Sourced developments and why they matter when available',insideHTML(f),'inside')}
+ ${hasAnalysis?sec('Deep-dive analysis','Sourced developments and why they matter',insideHTML(f),'inside'):''}
  ${sec('Which stocks are working?','Performers, contributors and drags',`<div id="perf">${perfHTML(f)}</div>`,'','performance')}
- ${sec('Deep-dive portfolio reading','Gemini narrative, when available',wholeHTML())}
+ ${hasPortfolio?sec('Deep-dive portfolio reading','Portfolio context from sourced research',wholeHTML()):''}
  <div class="dark view-panel" data-view="dna"><div class="w"><section class="sec"><div><h2>The DNA</h2><p class="sub">Eight measured traits, computed from holdings and NAV history. Each fund produces its own.</p></div>
  <div class="fpw"><div>${fpSVG(f)}<div id="fpr" class="mut">Hover or tap a band to read the trait.</div></div>
  <div class="pf"><h3>DNA profile</h3><ul class="pf">${f.profile.map(([l,n])=>`<li>${esc(l)}<i>${[1,2,3,4,5].map(k=>`<s class="${k<=n?'f':''}"></s>`).join('')}</i></li>`).join('')}</ul></div></div></section></div></div>
- ${sec('What is this fund really?','The analyst’s read',`<p class="big">${P.statement?esc(P.statement):wait}</p><div class="two"><div><p class="lbl">FundDNA interpretation</p><p>${P.interp?esc(P.interp[0]):''}</p></div><p style="align-self:end">${P.interp?esc(P.interp[1]||''):''}</p></div>`)}
+ ${P.statement?sec('What is this fund really?','The analyst’s read',`<p class="big">${esc(P.statement)}</p><div class="two"><div><p class="lbl">FundDNA interpretation</p><p>${P.interp?esc(P.interp[0]):''}</p></div><p style="align-self:end">${P.interp?esc(P.interp[1]||''):''}</p></div>`):''}
  ${sec('Performance','Fund against its index',`<div class="pb" role="group" aria-label="Period">${[1,3,5].map(y=>`<button data-y="${y}" aria-pressed="${y===per}">${y}Y</button>`).join('')}</div><div id="chart">${chartHTML()}</div><div class="leg"><span><i style="border-color:#14130E"></i>Fund (NAV)</span><span><i style="border-color:#77746A"></i>${esc(f.benchName)}</span><span>Rebased to 0 at period start · quarter-end points</span></div>`,'','performance')}
  ${sec('Where the money is','Sector exposure, sized by weight',`${mapHTML(f)}${f.mcap?`<p class="lbl" style="margin-top:30px">Market cap (approx., largest holdings)</p><div class="mc">${['Large','Mid','Small'].map((n,i)=>`<div style="flex:${Math.max(f.mcap[i],4)}"><b>${f.mcap[i]}%</b><span>${n}</span></div>`).join('')}</div>`:''}`,'','holdings')}
  ${sec('The book','Largest positions and recent moves',`<div class="tw"><table class="bk"><thead><tr><th>COMPANY</th><th>WEIGHT</th><th>SECTOR</th><th>1M</th><th>3M</th></tr></thead><tbody>${bk.map(r=>`<tr><td>${esc(nm(r[0]))}</td><td>${r[1].toFixed(1)}%</td><td>${esc(r[2])}</td><td class="${cl(r[3])}">${sg(r[3])}</td><td class="${cl(r[4])}">${sg(r[4])}</td></tr>`).join('')}</tbody></table></div><p class="cap">Month-on-month position changes appear once two monthly disclosures have been captured.</p>`,'','holdings')}
- ${sec('Where it can hurt','Risk in the numbers',`<div class="rk"><div><b>${st.vol!=null?st.vol.toFixed(1)+'%':'—'}</b><span>Volatility (3Y)</span></div><div><b>${st.beta!=null?st.beta.toFixed(2):'—'}</b><span>Beta vs index</span></div><div><b class="neg">${sg(st.dd)}</b><span>Maximum drawdown (3Y)</span></div><div><b>${st.sharpe!=null?st.sharpe.toFixed(2):'—'}</b><span>Sharpe (rf 6.5%)</span></div></div><p class="note">${P.risk_note?esc(P.risk_note):wait}</p>${ddHTML(f)}<p class="cap">Drawdown from prior peak, quarter-end NAV observations.</p>`,'','risk')}
- ${sec('What could break the thesis?','Three things to watch',risks.length?`<div class="brk">${risks.map((r,i)=>`<div><b>0${i+1}</b><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p></div>`).join('')}</div>`:`<p class="note">${wait}</p>`,'','risk')}
+ ${sec('Where it can hurt','Risk in the numbers',`<div class="rk"><div><b>${st.vol!=null?st.vol.toFixed(1)+'%':'—'}</b><span>Volatility (3Y)</span></div><div><b>${st.beta!=null?st.beta.toFixed(2):'—'}</b><span>Beta vs index</span></div><div><b class="neg">${sg(st.dd)}</b><span>Maximum drawdown (3Y)</span></div><div><b>${st.sharpe!=null?st.sharpe.toFixed(2):'—'}</b><span>Sharpe (rf 6.5%)</span></div></div>${P.risk_note?`<p class="note">${esc(P.risk_note)}</p>`:''}${ddHTML(f)}<p class="cap">Drawdown from prior peak, quarter-end NAV observations.</p>`,'','risk')}
+ ${risks.length?sec('What could break the thesis?','Three things to watch',`<div class="brk">${risks.map((r,i)=>`<div><b>0${i+1}</b><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p></div>`).join('')}</div>`,'','risk'):''}
  ${sec('Who is running the money?','',`<dl class="mg"><div><dt>Manager${f.mgr.name.includes(',')?'s':''}</dt><dd>${esc(f.mgr.name)}</dd></div><div><dt>On this fund</dt><dd>${f.mgr.tenure}</dd></div><div><dt>Holdings</dt><dd>${f.mgr.count}</dd></div><div><dt>Portfolio turnover</dt><dd>${f.mgr.turn}</dd></div></dl>`,'','holdings')}
  ${sec('Put it in context','Same measures, side by side',`<div id="cmp">${cmpHTML()}</div>`,'ctx','compare')}
- <div class="w view-panel" data-view="dna"><section class="fin"><div><h2>The fund, in one line</h2><p class="big">${P.line?esc(P.line):wait}</p><p class="pl"><span>DNA profile</span>${f.profile.slice(0,4).map(p=>esc(p[0])).join(' · ')}</p></div>
- <svg class="fp" viewBox="0 0 600 300" aria-hidden="true">${fpBands(f.dna.map(v=>v/100),600,300,24,6).map(p=>`<g class="b">${p}</g>`).join('')}</svg></section><footer>Data: AMFI, AMC monthly disclosures (via Groww), NSE/BSE filings and prices, Screener.in, reputable financial press. Analysis by Gemini from cited sources only. Not investment advice.</footer></div>`;
+ <div class="w view-panel" data-view="dna"><section class="fin"><div><h2>${P.line?'The fund, in one line':'DNA profile'}</h2>${P.line?`<p class="big">${esc(P.line)}</p>`:''}<p class="pl"><span>DNA profile</span>${f.profile.slice(0,4).map(p=>esc(p[0])).join(' · ')}</p></div>
+ <svg class="fp" viewBox="0 0 600 300" aria-hidden="true">${fpBands(f.dna.map(v=>v/100),600,300,24,6).map(p=>`<g class="b">${p}</g>`).join('')}</svg></section><footer>Data: AMFI, AMC monthly disclosures (via Groww), NSE/BSE filings and prices, Screener.in, reputable financial press. ${hasAnalysis?'Analysis by Gemini from cited sources only.':''} Not investment advice.</footer></div>`;
  showView(view);
 }
 /* ===== INTERACTION ===== */
