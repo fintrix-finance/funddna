@@ -94,6 +94,7 @@ table{font-size:13px}th,td{padding-left:8px;padding-right:8px}th:first-child,td:
 @media(max-width:860px){.w.cover{padding:35px 20px 60px}.cover-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cover-card{min-height:155px;padding:15px}.cover-card b{font-size:25px}.cover-card i{font-size:18px}}
 @media(max-width:480px){.cover-intro{display:block}.cover-orbit{display:none}.cover-grid{grid-template-columns:1fr 1fr;gap:9px}.cover-card{min-height:156px;padding:13px}.cover-card b{font-size:23px}.cover-card span{font-size:12px;line-height:1.3;margin-top:9px}.cover-card i{font-size:17px;padding-top:12px}}
 
+.moves-hero{background:#15171d;color:#f4f1e9;padding:25px 32px 30px;border-top:2px solid #e5e2d9}.moves-hero .eyebrow{font:500 11px var(--sans);letter-spacing:.2em;color:#aeb0b6}.moves-hero h2{font:400 clamp(34px,5vw,58px)/1 var(--serif);margin:12px 0 14px}.moves-hero p{font:15px/1.5 var(--sans);max-width:680px;color:#c2c3c7}.moves-hero a{color:#fff}.moves-hero .movement{display:grid;grid-template-columns:1fr auto;gap:10px;border-top:1px solid #44454b;padding:13px 0}.moves-hero .movement b{font:500 15px var(--sans)}.moves-hero .movement span{font:12px var(--sans);color:#aaaeb6}.moves-hero .movement em{font:400 19px var(--serif)}.moves-hero .movement small{display:block;font:12px var(--sans);color:#adb0b8}.moves-hero .moves-empty{margin:20px 0}.moves-hero .moves-caption{font-size:12px;color:#a6a7ac;margin-top:16px}@media(max-width:600px){.moves-hero{padding:24px 20px}.moves-hero h2{font-size:39px}}
 /* FundDNA cover: dark editorial mode. Interior fund pages keep their existing design. */
 body:has(.cover){background:#0c0d11;color:#f4f1e9;overflow-x:hidden}body:has(.cover) header{background:#0c0d11;color:#f4f1e9;border-color:#44444a}body:has(.cover) .logo,body:has(.cover) nav a[aria-current=page]{color:#fff}body:has(.cover) nav a{color:#aaa9ad}body:has(.cover) nav a:hover{color:#fff}body:has(.cover) .srch input{color:#fff;border-color:#777;opacity:.9}body:has(.cover) .srch input::placeholder{color:#aaa}body:has(.cover) #res{background:#11131a;color:#fff;border-color:#666}body:has(.cover) .rt{color:#aaa}body:has(.cover) .av{color:#fff;border-color:#aaa}
 .w.cover{max-width:1180px;padding:55px 32px 100px;position:relative;isolation:isolate;overflow:hidden}
@@ -127,7 +128,7 @@ body:has(.portfolio){background:#0c0d11;color:#f4f1e9;overflow-x:hidden}body:has
 const API=(document.querySelector('meta[name=funddna-api]')||{}).content||'';
 const D={asOf:'',dims:['Return','Momentum','Stability','Resilience','Concentration','Large-cap','Equity','Breadth'],
  dimDefs:['3Y annualised return vs the index','6M return','Lower NAV volatility scores higher','Smaller 3Y max drawdown scores higher','Top-10 holdings weight','Large-cap share of researched holdings (approx.)','Equity share of the portfolio','Spread across sectors (1 − top sector weight)'],
- bench:[],cat:null,refs:{bench:{name:'Index'}},funds:{},analysis:{}};
+ bench:[],cat:null,refs:{bench:{name:'Index'}},funds:{},analysis:{},moves:{}};
 const clamp=v=>Math.max(3,Math.min(97,Math.round(v)));
 function toUI(x){
  const st=x.stats||{},b=x.bench||{},bs=b.stats||{},eq=x.holdings.filter(h=>h.type==='EQUITY');
@@ -288,6 +289,12 @@ function wholeHTML(){
  ${A.assetOnly?'':`<p class="lbl" style="margin-top:30px">Sectors and themes</p><div class="brk">${(P.themes||[]).slice(0,3).map((t,i)=>`<div><b>0${i+1}</b><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p><p class="cap">${L(t.holdings)}</p></div>`).join('')}</div>
  <p class="lbl" style="margin-top:30px">Macro factors that matter to these holdings</p><div class="tw"><table class="bk lt"><thead><tr><th>FACTOR</th><th>WHY IT MATTERS HERE</th><th>HOLDINGS EXPOSED</th></tr></thead><tbody>${(P.macro||[]).map(m=>`<tr><td>${esc(m.factor)}</td><td style="text-align:left">${esc(m.why)}</td><td style="text-align:left">${L(m.holdings)}</td></tr>`).join('')}</tbody></table></div>`}`;
 }
+function movesHTML(code){const x=D.moves?.[code];if(!x)return `<p class="moves-empty">Latest disclosed holdings as of ${esc(D.funds[code]?.portfolioDate||'the shown date')}. Checking whether an earlier monthly disclosure is available for comparison.</p>`;
+ if(!x.available)return `<p class="moves-empty">Latest disclosed positions: ${esc(x.latest||D.funds[code]?.portfolioDate||'date not available')}. We need two dated monthly disclosures before showing additions, exits or weight changes. No moves inferred.</p><p class="moves-caption">Only published holdings, not a live trade feed.</p>`;
+ if(!x.moves?.length)return `<p class="moves-empty">No position crossed the 0.5 percentage-point display threshold in the published top 60 between ${esc(x.from)} and ${esc(x.to)}.</p><p class="moves-caption">${esc(x.basis)}</p>`;
+ return `<p>Published holdings from ${esc(x.from)} to ${esc(x.to)}. Reported weights, not confirmed trades.</p>${x.moves.slice(0,8).map(m=>`<div class="movement"><div><b>${esc(m.name)}</b><small>${esc(m.type)} · ${esc(m.holdingType)}</small></div><div><em>${m.delta>0?'+':''}${Number(m.delta).toFixed(2)} pts</em><small>${m.from==null?'outside top 60':Number(m.from).toFixed(2)+'%'} → ${m.to==null?'outside top 60':Number(m.to).toFixed(2)+'%'}</small></div></div>`).join('')}<p class="moves-caption">${esc(x.basis)}. Weight shifts may reflect prices or flows, not a manager trade.</p>`;
+}
+async function getMoves(code){try{const x=await getJ(`${API}/api/moves?code=${code}`);D.moves[code]=x;if(cur===code&&view==='research'){const el=$('#moves');if(el)el.innerHTML=`<p class="eyebrow">INSIDE THE FUND / MONTHLY DISCLOSURES</p><h2>What moved inside?</h2>${movesHTML(code)}`}}catch(e){D.moves[code]={available:false,reason:'not readable'};if(cur===code&&view==='research'){const el=$('#moves');if(el)el.innerHTML=`<p class="eyebrow">INSIDE THE FUND / MONTHLY DISCLOSURES</p><h2>What moved inside?</h2>${movesHTML(code)}`}}}
 function render(){
  const f=D.funds[cur];if(!f)return;renderSeq++;
  if(peer===cur||!D.funds[peer])peer=ids.find(i=>i!==cur)||null;
@@ -298,6 +305,7 @@ function render(){
  $('#app').innerHTML=`
  <div class="w"><div class="section-switch" aria-label="Fund sections"><a href="#home" data-route="home">← All funds</a>${views.map(([v,n])=>`<a href="#${v}/${cur}" data-route="${v}">${n}</a>`).join('')}</div><section id="top" class="idn"><div><h1>${esc(f.name)}</h1><p class="plan">${esc(f.plan)}</p><p class="stamp">NAV ${esc(f.navDate)} · Holdings as of ${dt(f.portfolioDate)} · <a href="${disclosureUrl}" target="_blank" rel="noopener">AMC disclosure directory</a></p></div>
  <div class="fig"><div><b>₹${inr(f.nav)}</b><span>NAV</span></div><div><b class="${cl(st.r1)}">${sg(st.r1,2)}</b><span>1Y</span></div><div><b class="${f.aum>=100000?'sm':''}">${f.aum!=null?'₹'+f.aum.toLocaleString('en-IN')+' Cr':'—'}</b><span>AUM</span></div><div><b>${st.er!=null?st.er.toFixed(2)+'%':'—'}</b><span>EXPENSE RATIO</span></div></div></section></div>
+ <div class="w moves-hero view-panel" data-view="research" id="moves"><p class="eyebrow">INSIDE THE FUND / MONTHLY DISCLOSURES</p><h2>What moved inside?</h2>${movesHTML(cur)}</div>
  ${sec('Research brief','What this fund owns, directly from disclosed data',factualResearch(f),'facts')}
  ${sec('Exposure and fit','Where the assets are concentrated; category is not a suitability judgment',factualExposure(f),'exposure')}
  ${hasAnalysis?sec(A.assetOnly?'Holdings analysis':'Deep-dive analysis',A.assetOnly?'What the disclosed positions mean for this fund':'Sourced developments and why they matter',insideHTML(f),'inside'):''}
@@ -332,11 +340,11 @@ app.addEventListener('click',e=>{const b=e.target.closest('.pb button');if(!b)re
 app.addEventListener('change',e=>{if(e.target.id==='peer'){peer=e.target.value;$('#cmp').innerHTML=cmpHTML()}});
 const q=$('#q'),res=$('#res');
 async function load(code,v='research',push=true){
- code=String(code);if(cur===code&&D.funds[code]){view=v;if(push)location.hash=v+'/'+code;render();scrollTo(0,0);return}cur=code;view=v;q.value='';res.style.display='none';if(push)location.hash=v+'/'+code;
+ code=String(code);if(cur===code&&D.funds[code]){view=v;if(push)location.hash=v+'/'+code;render();scrollTo(0,0);if(!D.moves[code])getMoves(code);return}cur=code;view=v;q.value='';res.style.display='none';if(push)location.hash=v+'/'+code;
  if(!D.funds[code]){$('#app').innerHTML=`<div class="w"><section class="idn"><div><h1 class="mut">Loading fund…</h1><p class="stamp">Fetching holdings, NAV history and prices.</p></div></section></div>`;
   try{const x=await getJ(`${API}/api/fund?code=${code}`);D.funds[code]=toUI(x);D.asOfDate=new Date(x.seriesEnd||Date.now());if(!ids.includes(code))ids.push(code);try{localStorage.setItem('fd_recent',JSON.stringify(ids.slice(-6)))}catch(e){}}
   catch(e){$('#app').innerHTML=`<div class="w"><section class="idn"><div><h1>Couldn’t load this fund</h1><p class="stamp">${esc(e.message)}. Holdings may not be published for this scheme (e.g. some debt, FoF or closed schemes).</p></div></section></div>`;return}}
- if(cur!==code)return;render();scrollTo(0,0);
+ if(cur!==code)return;render();scrollTo(0,0);if(!D.moves[code])getMoves(code);
  if(!D.analysis[code]){D.analysis[code]={loading:true};
   getAnalysis(code);}
 }
