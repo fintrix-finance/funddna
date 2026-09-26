@@ -1,7 +1,7 @@
-name: Daily prebuild
+name: Material-change scan and prebuild
 on:
   schedule:
-    - cron: '40 8 * * *'   # 14:10 IST, after the Gemini daily quota resets (midnight Pacific)
+    - cron: '40 8 * * *'   # 14:10 IST: cheap signal scan; Gemini only for material changes
   workflow_dispatch: {}
 permissions:
   contents: write
@@ -30,13 +30,16 @@ jobs:
           git diff --cached --quiet || git commit -m "Nightly data $(date -u +%F)"
           git pull --rebase
           git push
-      - name: Confirm all analyses refreshed
+      - name: Confirm analyses exist and material triggers completed
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
           const funds = ['118955','122639','120166','118989','120503','119598'];
-          const missing = funds.filter(c => { try { const a = JSON.parse(fs.readFileSync(`data/analysis/${c}.json`)); return !a.holdings?.length || Date.now() - new Date(a.generatedAt) > 30 * 3600e3; } catch { return true; } });
-          console.log(`Fresh analysis: ${funds.length - missing.length}/${funds.length}; missing/stale: ${missing.join(',') || 'none'}`);
-          if (missing.length) process.exitCode = 1;
+          const missing = funds.filter(c => { try { const a = JSON.parse(fs.readFileSync(`data/analysis/${c}.json`)); return !a.holdings?.length || !a.portfolio; } catch { return true; } });
+          console.log(`Valid analyses: ${funds.length - missing.length}/${funds.length}; missing: ${missing.join(',') || 'none'}. Analysis dates are intentionally not checked: unchanged funds stay valid.`);
+          if (missing.length || process.env.BUILD_OUTCOME === 'failure') process.exitCode = 1;
           NODE
+      - name: Propagate material-trigger failure
+        if: steps.build.outcome == 'failure'
+        run: exit 1
